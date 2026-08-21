@@ -1,4 +1,5 @@
 import java.util.Scanner;
+import java.util.regex.Pattern;
 
 public class Duke {
     public void main(String[] args) {
@@ -6,19 +7,27 @@ public class Duke {
         greet();
         String input = get_input();
         while (!input.equals("bye")) {
-            if (input.equals("list")) {
+            String[] readInput = readInput(input);
+            if (readInput[0].equals("list")) {
                 System.out.println(tasks);
-            } else if (input.substring(0, 4).equals("mark") && input.charAt(4) == ' ') {
-                tasks.mark(Integer.parseInt(input.substring(5)));
-            } else if (input.substring(0, 6).equals("unmark") && input.charAt(6) == ' ') {
-                tasks.unmark(Integer.parseInt(input.substring(7)));
-            } else {
-                    Task t = new Task(input);
-                    tasks.addTask(t);
-                }
-                System.out.println();
-                input = get_input();
+            } else if (readInput[0].equals("mark")) {
+                tasks.mark(Integer.parseInt(readInput[1]) - 1);
+            } else if (readInput[0].equals("unmark")) {
+                tasks.unmark(Integer.parseInt(readInput[1]) - 1);
+            } else if (readInput[0].equals("todo")) {
+                ToDo t = new ToDo(readInput[1]);
+                tasks.addTask(t);
+            } else if (readInput[0].equals("deadline")) {
+                Deadline d = new Deadline(readInput[1], readInput[2]);
+                tasks.addTask(d);
+            } else if (readInput[0].equals("event")) {
+                System.out.println(readInput[2] + readInput[3]);
+                Event e = new Event(readInput[1], readInput[2], readInput[3]);
+                tasks.addTask(e);
             }
+            System.out.println();
+            input = get_input();
+        }
         exit();
     }
 
@@ -48,6 +57,29 @@ public class Duke {
     private static void echo(String str) {
         System.out.println(str);
         System.out.println();
+    }
+
+    private static String[] readInput(String input) {
+        String[] splitInput = input.split(" ");
+        String keyword = splitInput[0];
+        if (keyword.equals("list")) {
+            return new String[] {"list"};
+        } else if (keyword.equals("mark")) {
+            return new String[] {"mark", splitInput[1]};
+        } else if (keyword.equals("unmark")) {
+            return new String[] {"unmark", splitInput[1]};
+        } else if (keyword.equals("todo")) {
+            return new String[] {"todo", input.substring(5)};
+        } else if (keyword.equals("deadline")) {
+            String substrings = input.substring(9);
+            String[] splitDates = substrings.split(Pattern.quote(" /by "));
+            return new String[] {"deadline", splitDates[0], splitDates[1]};
+        } else if (keyword.equals("event")) {
+            String substrings = input.substring(6);
+            String[] splitDates = substrings.split(Pattern.quote(" /from ") + "|" + Pattern.quote(" /to "));
+            return new String[] {"event", splitDates[0], splitDates[1], splitDates[2]};
+        }
+        return new String[] {input};
     }
 
     private class Task {
@@ -80,6 +112,45 @@ public class Duke {
                 return "[X] " + name;
             }
             return "[ ] " + name;
+        }
+    }
+
+    private class ToDo extends Task {
+        private ToDo(String name) {
+            super(name);
+        }
+
+        @Override
+        public String toString() {
+            return "[T]" + super.toString();
+        }
+    }
+
+    private class Deadline extends Task {
+        private String date;
+        private Deadline(String name, String date) {
+            super(name);
+            this.date = date;
+        }
+
+        @Override
+        public String toString() {
+            return String.format("[D]%s (due by: %s)", super.toString(), date);
+        }
+    }
+
+    private class Event extends Task {
+        private String start;
+        private String end;
+        private Event(String name, String start, String end) {
+            super(name);
+            this.start = start;
+            this.end = end;
+        }
+
+        @Override
+        public String toString() {
+            return String.format("[E]%s (from: %s to: %s)", super.toString(), start, end);
         }
     }
 
