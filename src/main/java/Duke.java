@@ -26,7 +26,9 @@ public class Duke {
                 System.out.println(readInput[2] + readInput[3]);
                 Event e = new Event(readInput[1], readInput[2], readInput[3]);
                 tasks.addTask(e);
-            } else if (readInput[0].equals("error")){
+            } else if (readInput[0].equals("delete")) {
+                tasks.removeTask(Integer.parseInt(readInput[1]) - 1);
+            } else if (readInput[0].equals("error")) {
                 System.out.println("Don't know what that means :(");
                 System.out.println("Supported commands: ");
                 System.out.println("list -> Shows all tasks");
@@ -116,6 +118,12 @@ public class Duke {
                 }
             }
             System.out.println("event has the format 'event <description> /from <start> /to <end>'!");
+            return new String[] {""};
+        } else if (keyword.equals("delete")) {
+            if (splitInput.length == 2) {
+                return new String[]{"delete", splitInput[1]};
+            }
+            System.out.println("delete needs to be followed by one argument, its index!");
             return new String[] {""};
         }
         return new String[] {"error"};
@@ -215,6 +223,18 @@ public class Duke {
             return currSize - 1;
         }
 
+
+        private int removeTask(int i) {
+            if (i >= currSize || i < 0) {
+                System.out.println("Index out of bounds");
+                return -1;
+            }
+            System.out.println("Task removed: " + tasks.get(i).toString());
+            tasks.remove(i);
+            currSize--;
+            return 1;
+        }
+        
         private int mark(int i) {
             if (i >= currSize || i < 0) {
                 System.out.println("Index out of bounds.");
