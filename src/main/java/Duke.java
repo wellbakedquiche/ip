@@ -7,14 +7,18 @@ public class Duke {
         String input = get_input();
         while (!input.equals("bye")) {
             if (input.equals("list")) {
-                System.out.println(tasks.toString());
+                System.out.println(tasks);
+            } else if (input.substring(0, 4).equals("mark") && input.charAt(4) == ' ') {
+                tasks.mark(Integer.parseInt(input.substring(5)));
+            } else if (input.substring(0, 6).equals("unmark") && input.charAt(6) == ' ') {
+                tasks.unmark(Integer.parseInt(input.substring(7)));
             } else {
-                Task t = new Task(input);
-                tasks.addTask(t);
+                    Task t = new Task(input);
+                    tasks.addTask(t);
+                }
+                System.out.println();
+                input = get_input();
             }
-            System.out.println();
-            input = get_input();
-        }
         exit();
     }
 
@@ -48,13 +52,34 @@ public class Duke {
 
     private class Task {
         private String name;
+        private boolean done;
         private Task(String name) {
             this.name = name;
+            this.done = false;
+        }
+
+        private boolean markDone() {
+            if (done) {
+                return false;
+            }
+            done = true;
+            return true;
+        }
+
+        private boolean markUndone() {
+            if (!done) {
+                return false;
+            }
+            done = false;
+            return true;
         }
 
         @Override
         public String toString() {
-            return name;
+            if (done) {
+                return "[X] " + name;
+            }
+            return "[ ] " + name;
         }
     }
 
@@ -78,6 +103,34 @@ public class Duke {
             currSize++;
             System.out.println("Task added: " + t.toString());
             return currSize - 1;
+        }
+
+        private int mark(int i) {
+            if (i >= currSize || i < 0) {
+                System.out.println("Index out of bounds.");
+                return -1;
+            }
+            if (tasks[i].markDone()) {
+                System.out.println("Task marked as done:");
+            } else {
+                System.out.println("Task already marked as done:");
+            }
+            System.out.println(tasks[i].toString());
+            return 1;
+        }
+
+        private int unmark(int i) {
+            if (i >= currSize || i < 0) {
+                System.out.println("Index out of bounds.");
+                return -1;
+            }
+            if (tasks[i].markUndone()) {
+                System.out.println("Task marked as undone:");
+            } else {
+                System.out.println("Task already marked as undone:");
+            }
+            System.out.println(tasks[i].toString());
+            return 1;
         }
 
         @Override
