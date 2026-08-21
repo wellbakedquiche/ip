@@ -1,3 +1,5 @@
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
 import java.util.regex.Pattern;
 
@@ -24,6 +26,16 @@ public class Duke {
                 System.out.println(readInput[2] + readInput[3]);
                 Event e = new Event(readInput[1], readInput[2], readInput[3]);
                 tasks.addTask(e);
+            } else if (readInput[0].equals("error")){
+                System.out.println("Don't know what that means :(");
+                System.out.println("Supported commands: ");
+                System.out.println("list -> Shows all tasks");
+                System.out.println("mark <index> -> Marks index as done");
+                System.out.println("unmark <index> -> Marks index as not done");
+                System.out.println("todo <name> -> Creates to-do with name");
+                System.out.println("deadline <name> /by <due_date> -> Creates deadline with name and due date");
+                System.out.println("event <name> /from <start> /to <end> -> Creates event with name, start and end date");
+                System.out.println("bye -> exits chatbot");
             }
             System.out.println();
             input = get_input();
@@ -60,26 +72,53 @@ public class Duke {
     }
 
     private static String[] readInput(String input) {
+        if (input.equals("")) {
+            return new String[] {""};
+        }
         String[] splitInput = input.split(" ");
         String keyword = splitInput[0];
         if (keyword.equals("list")) {
             return new String[] {"list"};
         } else if (keyword.equals("mark")) {
-            return new String[] {"mark", splitInput[1]};
+            if (splitInput.length == 2) {
+                return new String[]{"mark", splitInput[1]};
+            }
+            System.out.println("mark needs to be followed by one argument, its index!");
+            return new String[] {""};
         } else if (keyword.equals("unmark")) {
-            return new String[] {"unmark", splitInput[1]};
+            if (splitInput.length == 2) {
+                return new String[]{"unmark", splitInput[1]};
+            }
+            System.out.println("unmark needs to be followed by one argument, its index!");
+            return new String[] {""};
         } else if (keyword.equals("todo")) {
-            return new String[] {"todo", input.substring(5)};
+            if (input.length() > 5) {
+                return new String[]{"todo", input.substring(5)};
+            }
+            System.out.println("todo needs to be followed by one argument, its description!");
+            return new String[] {""};
         } else if (keyword.equals("deadline")) {
-            String substrings = input.substring(9);
-            String[] splitDates = substrings.split(Pattern.quote(" /by "));
-            return new String[] {"deadline", splitDates[0], splitDates[1]};
+            if (input.length() > 9) {
+                String substrings = input.substring(9);
+                String[] splitDates = substrings.split(Pattern.quote(" /by "));
+                if (splitDates.length == 2) {
+                    return new String[]{"deadline", splitDates[0], splitDates[1]};
+                }
+            }
+            System.out.println("deadline has the format 'deadline <description> /by <duedate>'!");
+            return new String[] {""};
         } else if (keyword.equals("event")) {
-            String substrings = input.substring(6);
-            String[] splitDates = substrings.split(Pattern.quote(" /from ") + "|" + Pattern.quote(" /to "));
-            return new String[] {"event", splitDates[0], splitDates[1], splitDates[2]};
+            if (input.length() > 6) {
+                String substrings = input.substring(6);
+                String[] splitDates = substrings.split(Pattern.quote(" /from ") + "|" + Pattern.quote(" /to "));
+                if (splitDates.length == 3) {
+                    return new String[]{"event", splitDates[0], splitDates[1], splitDates[2]};
+                }
+            }
+            System.out.println("event has the format 'event <description> /from <start> /to <end>'!");
+            return new String[] {""};
         }
-        return new String[] {input};
+        return new String[] {"error"};
     }
 
     private class Task {
@@ -155,13 +194,13 @@ public class Duke {
     }
 
     private class TaskList {
-        private Task[] tasks;
+        private List<Task> tasks;
         private int size;
         private int currSize;
 
 
         private TaskList(int size) {
-            tasks = new Task[size];
+            tasks = new ArrayList<Task>(size);
             this.size = size;
             currSize = 0;
         }
@@ -170,7 +209,7 @@ public class Duke {
             if (currSize == size) {
                 return -1;
             }
-            tasks[currSize] = t;
+            tasks.add(t);
             currSize++;
             System.out.println("Task added: " + t.toString());
             return currSize - 1;
@@ -181,12 +220,12 @@ public class Duke {
                 System.out.println("Index out of bounds.");
                 return -1;
             }
-            if (tasks[i].markDone()) {
+            if (tasks.get(i).markDone()) {
                 System.out.println("Task marked as done:");
             } else {
                 System.out.println("Task already marked as done:");
             }
-            System.out.println(tasks[i].toString());
+            System.out.println(tasks.get(i).toString());
             return 1;
         }
 
@@ -195,12 +234,12 @@ public class Duke {
                 System.out.println("Index out of bounds.");
                 return -1;
             }
-            if (tasks[i].markUndone()) {
+            if (tasks.get(i).markUndone()) {
                 System.out.println("Task marked as undone:");
             } else {
                 System.out.println("Task already marked as undone:");
             }
-            System.out.println(tasks[i].toString());
+            System.out.println(tasks.get(i).toString());
             return 1;
         }
 
@@ -211,7 +250,7 @@ public class Duke {
             }
             String finalString = "Your current tasks are:";
             for (int i = 0; i < currSize; i++) {
-                finalString += String.format("\n%d. %s", i + 1, tasks[i].toString());
+                finalString += String.format("\n%d. %s", i + 1, tasks.get(i).toString());
             }
             return finalString;
         }
