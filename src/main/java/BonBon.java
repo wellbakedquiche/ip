@@ -2,14 +2,26 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 import java.util.regex.Pattern;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.StandardOpenOption;
 
-public class Duke {
+
+
+public class BonBon {
+    TaskList tasks;
     public void main(String[] args) {
-        TaskList tasks = new TaskList(100);
+        tasks = new TaskList(100);
+        Path filePath = Path.of("./src/main/java/data/bonbon.txt");
+        loadFile(filePath);
         greet();
         String input = get_input();
         while (!input.equals("bye")) {
             String[] readInput = readInput(input);
+            if (!readInput[0].equals("list") && !readInput[0].equals("error")) {
+                writeFile(filePath, input);
+            }
             if (readInput[0].equals("list")) {
                 System.out.println(tasks);
             } else if (readInput[0].equals("mark")) {
@@ -129,6 +141,51 @@ public class Duke {
         return new String[] {"error"};
     }
 
+    private void writeFile(Path filePath, String input) {
+        try {
+            Files.writeString(filePath, input +"\n" , StandardOpenOption.APPEND);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void loadFile(Path filePath) {
+        if (!Files.exists(filePath)) {
+            System.out.println("No saved data found!");
+            return;
+        }
+        try {
+            List<String> lines = Files.readAllLines(filePath);
+            for (String input : lines) {
+                String[] readInput = readInput(input);
+                if (!readInput[0].equals("list") && !readInput[0].equals("error")) {
+                    writeFile(filePath, input);
+                }
+                if (readInput[0].equals("list")) {
+                    System.out.println(tasks);
+                } else if (readInput[0].equals("mark")) {
+                    tasks.mark(Integer.parseInt(readInput[1]) - 1);
+                } else if (readInput[0].equals("unmark")) {
+                    tasks.unmark(Integer.parseInt(readInput[1]) - 1);
+                } else if (readInput[0].equals("todo")) {
+                    ToDo t = new ToDo(readInput[1]);
+                    tasks.addTask(t);
+                } else if (readInput[0].equals("deadline")) {
+                    Deadline d = new Deadline(readInput[1], readInput[2]);
+                    tasks.addTask(d);
+                } else if (readInput[0].equals("event")) {
+                    System.out.println(readInput[2] + readInput[3]);
+                    Event e = new Event(readInput[1], readInput[2], readInput[3]);
+                    tasks.addTask(e);
+                } else if (readInput[0].equals("delete")) {
+                    tasks.removeTask(Integer.parseInt(readInput[1]) - 1);
+                }
+            }
+        } catch (IOException e) {
+            System.out.println("Error reading file: " + e.getMessage());
+        }
+    }
+
     private class Task {
         private String name;
         private boolean done;
@@ -234,7 +291,7 @@ public class Duke {
             currSize--;
             return 1;
         }
-        
+
         private int mark(int i) {
             if (i >= currSize || i < 0) {
                 System.out.println("Index out of bounds.");
@@ -273,6 +330,12 @@ public class Duke {
                 finalString += String.format("\n%d. %s", i + 1, tasks.get(i).toString());
             }
             return finalString;
+        }
+    }
+
+    private class BonBonException extends RuntimeException {
+        public BonBonException() {
+            super();
         }
     }
 }
