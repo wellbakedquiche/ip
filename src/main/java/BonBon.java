@@ -6,6 +6,10 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 
 
 
@@ -158,9 +162,6 @@ public class BonBon {
             List<String> lines = Files.readAllLines(filePath);
             for (String input : lines) {
                 String[] readInput = readInput(input);
-                if (!readInput[0].equals("list") && !readInput[0].equals("error")) {
-                    writeFile(filePath, input);
-                }
                 if (readInput[0].equals("list")) {
                     System.out.println(tasks);
                 } else if (readInput[0].equals("mark")) {
@@ -231,30 +232,36 @@ public class BonBon {
     }
 
     private class Deadline extends Task {
-        private String date;
+        private LocalDateTime date;
+        private static final DateTimeFormatter INPUT_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HHmm");
+        private static final DateTimeFormatter OUTPUT_FORMATTER = DateTimeFormatter.ofPattern("MMM dd yyyy, h:mma");
+
         private Deadline(String name, String date) {
             super(name);
-            this.date = date;
+            this.date = LocalDateTime.parse(date, INPUT_FORMATTER);
         }
 
         @Override
         public String toString() {
-            return String.format("[D]%s (due by: %s)", super.toString(), date);
+            return String.format("[D]%s (due by: %s)", super.toString(), date.format(OUTPUT_FORMATTER));
         }
     }
 
     private class Event extends Task {
-        private String start;
-        private String end;
+        private LocalDateTime start;
+        private LocalDateTime end;
+        private static final DateTimeFormatter INPUT_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HHmm");
+        private static final DateTimeFormatter OUTPUT_FORMATTER = DateTimeFormatter.ofPattern("MMM dd yyyy, h:mma");
         private Event(String name, String start, String end) {
             super(name);
-            this.start = start;
-            this.end = end;
+            this.start = LocalDateTime.parse(start, INPUT_FORMATTER);
+            this.end = LocalDateTime.parse(end, INPUT_FORMATTER);
         }
 
         @Override
         public String toString() {
-            return String.format("[E]%s (from: %s to: %s)", super.toString(), start, end);
+            return String.format("[E]%s (from: %s to: %s)", super.toString(),
+                    start.format(OUTPUT_FORMATTER), end.format(OUTPUT_FORMATTER));
         }
     }
 
