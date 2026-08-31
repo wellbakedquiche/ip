@@ -133,6 +133,22 @@ public class TaskList {
         return 1;
     }
 
+    public String find(String s) {
+        boolean foundTask = false;
+        String finalString = "Matching tasks found: ";
+        for (int i = 0; i < currSize; i++) {
+            Task task = tasks.get(i);
+            if (task.getName().contains(s)) {
+                finalString += String.format("\n%d. %s", i + 1, tasks.get(i).toString());
+                foundTask = true;
+            }
+        }
+        if (foundTask) {
+            return finalString;
+        }
+        return "No tasks found!";
+    }
+
     /**
      * Returns formatted string displaying all tasks in task list.
      *

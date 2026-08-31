@@ -28,7 +28,7 @@ public class BonBon {
         String input = Ui.getInput();
         while (!input.equals("bye")) {
             String[] readInput = Parser.readInput(input);
-            if (!readInput[0].equals("list") && !readInput[0].equals("error")) {
+            if (!readInput[0].equals("list") && !readInput[0].equals("error") && readInput[0].equals("find")) {
                 Storage.writeFile(filePath, input, tasks);
             }
             if (readInput[0].equals("list")) {
@@ -45,8 +45,10 @@ public class BonBon {
                 tasks.addEvent(readInput[1], readInput[2], readInput[3]);
             } else if (readInput[0].equals("delete")) {
                 tasks.removeTask(Integer.parseInt(readInput[1]) - 1);
+            } else if (readInput[0].equals("find")) {
+                System.out.println(tasks.find(readInput[1]));
             } else if (readInput[0].equals("error")) {
-                System.out.println("Don't know what that means :(");
+                System.out.println("Don't know what that means!! :(");
                 Ui.printCommand();
             }
             System.out.println();

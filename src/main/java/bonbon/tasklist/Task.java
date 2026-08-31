@@ -44,11 +44,10 @@ public class Task {
         return true;
     }
 
-    /**
-     * Returns <code>String</code> representation of task.
-     *
-     * @return <code>String</code> representation of task.
-     */
+    public String getName() {
+        return name;
+    }
+
     @Override
     public String toString() {
         if (done) {

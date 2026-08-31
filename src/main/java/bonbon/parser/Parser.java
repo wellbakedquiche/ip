@@ -67,6 +67,11 @@ public class Parser {
             }
             System.out.println("delete needs to be followed by one argument, its index!");
             return new String[] {""};
+        } else if (keyword.equals("find")) {
+            if (splitInput.length == 2) {
+                return new String[] {"find", splitInput[1]};
+            }
+            System.out.println("find needs to be followed by one argument, its substring!");
         }
         return new String[] {"error"};
     }

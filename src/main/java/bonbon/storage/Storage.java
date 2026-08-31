@@ -51,9 +51,7 @@ public class Storage {
             List<String> lines = Files.readAllLines(filePath);
             for (String input : lines) {
                 String[] readInput = Parser.readInput(input);
-                if (readInput[0].equals("list")) {
-                    System.out.println(tasks);
-                } else if (readInput[0].equals("mark")) {
+                if (readInput[0].equals("mark")) {
                     tasks.mark(Integer.parseInt(readInput[1]) - 1);
                 } else if (readInput[0].equals("unmark")) {
                     tasks.unmark(Integer.parseInt(readInput[1]) - 1);
