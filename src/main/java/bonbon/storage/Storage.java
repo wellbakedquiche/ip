@@ -1,6 +1,5 @@
 package bonbon.storage;
 
-import bonbon.BonBon;
 import bonbon.parser.Parser;
 import bonbon.tasklist.TaskList;
 

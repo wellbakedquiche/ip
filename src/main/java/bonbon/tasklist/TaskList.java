@@ -6,88 +6,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class TaskList {
-    public class Task {
-        private String name;
-        private boolean done;
-        public Task(String name) {
-            this.name = name;
-            this.done = false;
-        }
-
-        public boolean markDone() {
-            if (done) {
-                return false;
-            }
-            done = true;
-            return true;
-        }
-
-        public boolean markUndone() {
-            if (!done) {
-                return false;
-            }
-            done = false;
-            return true;
-        }
-
-        @Override
-        public String toString() {
-            if (done) {
-                return "[X] " + name;
-            }
-            return "[ ] " + name;
-        }
-    }
-
-    private class ToDo extends Task {
-        public ToDo(String name) {
-            super(name);
-        }
-
-        @Override
-        public String toString() {
-            return "[T]" + super.toString();
-        }
-    }
-
-    private class Deadline extends Task {
-        private LocalDateTime date;
-        private static final DateTimeFormatter INPUT_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HHmm");
-        private static final DateTimeFormatter OUTPUT_FORMATTER = DateTimeFormatter.ofPattern("MMM dd yyyy, h:mma");
-
-        public Deadline(String name, String date) {
-            super(name);
-            this.date = LocalDateTime.parse(date, INPUT_FORMATTER);
-        }
-
-        @Override
-        public String toString() {
-            return String.format("[D]%s (due by: %s)", super.toString(), date.format(OUTPUT_FORMATTER));
-        }
-    }
-
-    public class Event extends Task {
-        private LocalDateTime start;
-        private LocalDateTime end;
-        private static final DateTimeFormatter INPUT_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HHmm");
-        private static final DateTimeFormatter OUTPUT_FORMATTER = DateTimeFormatter.ofPattern("MMM dd yyyy, h:mma");
-        public Event(String name, String start, String end) {
-            super(name);
-            this.start = LocalDateTime.parse(start, INPUT_FORMATTER);
-            this.end = LocalDateTime.parse(end, INPUT_FORMATTER);
-        }
-
-        @Override
-        public String toString() {
-            return String.format("[E]%s (from: %s to: %s)", super.toString(),
-                    start.format(OUTPUT_FORMATTER), end.format(OUTPUT_FORMATTER));
-        }
-    }
-
     private List<Task> tasks;
     private int size;
     private int currSize;
-
 
     public TaskList(int size) {
         tasks = new ArrayList<Task>(size);
