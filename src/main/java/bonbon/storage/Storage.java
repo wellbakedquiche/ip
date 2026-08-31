@@ -7,9 +7,21 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
+
 import java.util.List;
 
+/**
+ * Storage writes and loads information to the file.
+ */
 public class Storage {
+
+    /**
+     * Writes input into the file path given.
+     *
+     * @param filePath the file path to write into.
+     * @param input the input to be written into filepath.
+     * @param tasks the related task list.
+     */
     public static void writeFile(Path filePath, String input, TaskList tasks) {
         try {
             if (filePath.getParent() != null) {
@@ -24,6 +36,12 @@ public class Storage {
         }
     }
 
+    /**
+     * Loads file path information into tasks.
+     *
+     * @param filePath the file path to read from.
+     * @param tasks the task list to write into.
+     */
     public static void loadFile(Path filePath, TaskList tasks) {
         if (!Files.exists(filePath)) {
             System.out.println("No saved data found!");
