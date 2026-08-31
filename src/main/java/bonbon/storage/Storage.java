@@ -12,9 +12,15 @@ import java.util.List;
 public class Storage {
     public static void writeFile(Path filePath, String input, TaskList tasks) {
         try {
-            Files.writeString(filePath, input +"\n" , StandardOpenOption.APPEND);
+            if (filePath.getParent() != null) {
+                Files.createDirectories(filePath.getParent());
+            }
+            if (!Files.exists(filePath)) {
+                Files.createFile(filePath);
+            }
+            Files.writeString(filePath, input + "\n", StandardOpenOption.APPEND);
         } catch (IOException e) {
-            e.printStackTrace();
+            System.out.println("Error writing to file: " + e.getMessage());
         }
     }
 
