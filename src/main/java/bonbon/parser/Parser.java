@@ -44,7 +44,7 @@ public class Parser {
                 String substrings = input.substring(6);
                 String[] splitDates = substrings.split(Pattern.quote(" /from ") + "|" + Pattern.quote(" /to "));
                 if (splitDates.length == 3) {
-                    return new String[]{"event", splitDates[0], splitDates[1], splitDates[2]};
+                    return new String[] {"event", splitDates[0], splitDates[1], splitDates[2]};
                 }
             }
             System.out.println("event has the format 'event <description> /from <start> /to <end>'!");
@@ -55,6 +55,11 @@ public class Parser {
             }
             System.out.println("delete needs to be followed by one argument, its index!");
             return new String[] {""};
+        } else if (keyword.equals("find")) {
+            if (splitInput.length == 2) {
+                return new String[] {"find", splitInput[1]};
+            }
+            System.out.println("find needs to be followed by one argument, its substring!");
         }
         return new String[] {"error"};
     }

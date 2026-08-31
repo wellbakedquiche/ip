@@ -2,3 +2,6 @@ todo Meow!
 deadline return book /by 2019-12-02 1800
 delete 2
 deadline Return books /by 2019-10-15 2359
+event Birthday Party /from 2006-01-14 1111 /to 2006-01-14 1112
+find Birthday
+find Party

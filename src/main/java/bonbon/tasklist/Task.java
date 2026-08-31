@@ -27,6 +27,10 @@ public class Task {
         return true;
     }
 
+    public String getName() {
+        return name;
+    }
+
     @Override
     public String toString() {
         if (done) {
