@@ -7,9 +7,15 @@ import bonbon.tasklist.TaskList;
 
 import java.nio.file.Path;
 
+/**
+ * BonBon implements a chatbot that manages user's task list.
+ */
 public class BonBon {
     TaskList tasks;
 
+    /**
+     * Runs the main application loop
+     */
     public void main(String[] args) {
         run();
     }
