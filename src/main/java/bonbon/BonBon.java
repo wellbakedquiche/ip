@@ -13,6 +13,7 @@ import java.nio.file.Path;
  * BonBon implements a chatbot that manages user's task list.
  */
 public class BonBon {
+
     static TaskList tasks;
 
     /**
@@ -23,11 +24,19 @@ public class BonBon {
     }
 
     private void run() {
+
         tasks = new TaskList(100);
+        assert tasks != null : "TaskList should be successfully instantiated";
+
         Path filePath = Path.of("./src/main/java/data/bonbon.txt");
+        assert filePath != null : "Storage file path must be successfully resolved";
+
         Storage.loadFile(filePath, tasks);
+
+
         Ui.greet();
         String input = Ui.getInput();
+
         while (!input.equals("bye")) {
             try {
                 String[] readInput = Parser.readInput(input);

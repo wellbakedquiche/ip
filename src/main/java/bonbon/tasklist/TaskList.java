@@ -2,6 +2,7 @@ package bonbon.tasklist;
 
 import bonbon.exception.BonBonException;
 import bonbon.exception.BonBonOutOfBoundsException;
+import bonbon.exception.BonBonTaskListFull;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -11,7 +12,7 @@ import java.util.List;
  */
 public class TaskList {
     private List<Task> tasks;
-    private int size;
+    private final int size;
     private int currSize;
 
     /**
@@ -32,13 +33,9 @@ public class TaskList {
      * @return the index of the added task;
      * @throws BonBonException when list is full.
      */
-    public int addTask(Task t) throws BonBonException {
-        if (currSize == size) {
-            throw new BonBonException("Task list is full!");
-        }
-        tasks.add(t);
-        currSize++;
-        return currSize - 1;
+    public int addToDo(String s) throws BonBonTaskListFull {
+        ToDo td = new ToDo(s);
+        return addTask(td);
     }
 
     /**
@@ -59,7 +56,7 @@ public class TaskList {
      * @param date the due date in format 'yyyy-MM-dd HHmm'.
      * @return the zero-based index of the newly added task, or -1 if the list is full.
      */
-    public int addDeadline(String desc, String date) throws BonBonException{
+    public int addDeadline(String desc, String date) throws BonBonTaskListFull {
         Deadline deadline = new Deadline(desc, date);
         return addTask(deadline);
     }
@@ -85,7 +82,7 @@ public class TaskList {
      * @param i the zero-based index of the task to be removed.
      * @return 1 if successfully deleted, and -1 if the index is out of range.
      */
-    public int removeTask(int i) throws BonBonOutOfBoundsException {
+    public int removeTask (int i) throws BonBonOutOfBoundsException {
         if (i >= currSize || i < 0) {
             throw new BonBonOutOfBoundsException(currSize);
         }
@@ -118,6 +115,12 @@ public class TaskList {
         tasks.get(i).markUndone();
     }
 
+    /**
+     * Returns all tasks that have given string as a substring in its description.
+     *
+     * @param s the substring that the task must have.
+     * @return formatted string with all matching tasks.
+     */
     public String find(String s) {
         boolean foundTask = false;
         String finalString = "Matching tasks found: ";
@@ -132,6 +135,13 @@ public class TaskList {
             return finalString;
         }
         return "No tasks found!";
+    }
+
+    public Task getLastTask() throws BonBonOutOfBoundsException {
+        if (currSize <= 0) {
+            throw new BonBonOutOfBoundsException(currSize);
+        }
+        return tasks.get(currSize - 1);
     }
 
     /**

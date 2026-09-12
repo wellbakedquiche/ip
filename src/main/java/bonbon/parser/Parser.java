@@ -22,6 +22,10 @@ public class Parser {
             throw new BonBonUnknownCommandException("");
         }
 
+        return new String[]{"event", splitDates[0], splitDates[1], splitDates[2]};
+    }
+
+    private static String[] parseFind(String input) throws BonBonInvalidInput {
         String[] splitInput = input.split(" ");
         String keyword = splitInput[0];
 
@@ -47,7 +51,7 @@ public class Parser {
                 }
                 return new String[] {"todo", input.substring(5)};
 
-            case "deadline" : {
+          case "deadline" : {
                 if (input.length() <= 9) {
                     throw new BonBonInvalidParameterException(keyword);
                 }

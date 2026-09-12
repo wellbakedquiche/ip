@@ -1,12 +1,15 @@
 package bonbon.ui;
 
+import bonbon.tasklist.Task;
+import bonbon.tasklist.TaskList;
+import bonbon.command.Command;
+
 import java.util.Scanner;
 
 /**
  * Manages user interface interactions, including reading inputs and formatting console outputs.
  */
 public class Ui {
-
     /**
      * Displays standard message banner to users.
      */
@@ -36,22 +39,30 @@ public class Ui {
      * @return the input line as a string.
      */
     public static String getInput() {
+        System.out.println();
         Scanner scanner = new Scanner(System.in);
         String input = scanner.nextLine();
         return input;
     }
 
+    public static void printTaskList(TaskList t) {
+        System.out.println(t.toString());
+    }
+
     /**
      * Displays list of commands and formats to users.
      */
-    public static void printCommand() {
-        System.out.println("Supported commands: ");
-        System.out.println("list -> Shows all tasks");
-        System.out.println("mark <index> -> Marks index as done");
-        System.out.println("unmark <index> -> Marks index as not done");
-        System.out.println("todo <name> -> Creates to-do with name");
-        System.out.println("deadline <name> /by <due_date> -> Creates deadline with name and due date");
-        System.out.println("event <name> /from <start> /to <end> -> Creates event with name, start and end date");
-        System.out.println("bye -> exits chatbot");
+    public static void printCommands() {
+        System.out.println(Command.toStringCommands());
+    }
+
+    public static void printSyntax(Command cmd) {
+        String s = String.format("Correct syntax for %s is:\n%s", cmd.getKeyword(), cmd.getSyntax());
+        System.out.println(s);
+    }
+
+    public static void printTaskAdd(Task t) {
+        String s = String.format("Task '%s' has been added!", t.toString());
+        System.out.println(s);
     }
 }

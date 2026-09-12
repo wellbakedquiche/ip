@@ -1,4 +1,0 @@
-event Movie date /from 2025-11-29 1730 /to 2025-11-29 2200
-mark 1
-mark 1
-mark 2
