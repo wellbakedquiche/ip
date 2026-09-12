@@ -1,5 +1,7 @@
 package bonbon;
 
+import bonbon.exception.BonBonException;
+import bonbon.exception.BonBonUnknownCommandException;
 import bonbon.parser.Parser;
 import bonbon.ui.Ui;
 import bonbon.storage.Storage;
@@ -27,34 +29,64 @@ public class BonBon {
         Ui.greet();
         String input = Ui.getInput();
         while (!input.equals("bye")) {
-            String[] readInput = Parser.readInput(input);
-            if (!readInput[0].equals("list") && !readInput[0].equals("error") && readInput[0].equals("find")) {
-                Storage.writeFile(filePath, input, tasks);
+            try {
+                String[] readInput = Parser.readInput(input);
+                handleInput(readInput);
+
+                if (!readInput[0].equals("list") && !readInput[0].equals("error") && !readInput[0].equals("find")) {
+                    Storage.writeFile(filePath, input, tasks);
+                }
+            } catch (BonBonException e) {
+                System.out.println(e.getMessage());
             }
-            if (readInput[0].equals("list")) {
-                System.out.println(tasks);
-            } else if (readInput[0].equals("mark")) {
-                tasks.mark(Integer.parseInt(readInput[1]) - 1);
-            } else if (readInput[0].equals("unmark")) {
-                tasks.unmark(Integer.parseInt(readInput[1]) - 1);
-            } else if (readInput[0].equals("todo")) {
-                tasks.addToDo(readInput[1]);
-            } else if (readInput[0].equals("deadline")) {
-                tasks.addDeadline(readInput[1], readInput[2]);
-            } else if (readInput[0].equals("event")) {
-                tasks.addEvent(readInput[1], readInput[2], readInput[3]);
-            } else if (readInput[0].equals("delete")) {
-                tasks.removeTask(Integer.parseInt(readInput[1]) - 1);
-            } else if (readInput[0].equals("find")) {
-                System.out.println(tasks.find(readInput[1]));
-            } else if (readInput[0].equals("error")) {
-                System.out.println("Don't know what that means!! :(");
-                Ui.printCommand();
-            }
+
             System.out.println();
             input = Ui.getInput();
         }
         Ui.exit();
+    }
+
+    public void handleInput(String[] readInput) {
+        String keyword = readInput[0];
+
+        try {
+            switch (keyword) {
+                case "list":
+                    System.out.println(tasks);
+                    break;
+                case "mark":
+                    tasks.mark(Integer.parseInt(readInput[1]) - 1);
+                    System.out.println("Task marked!");
+                    break;
+                case "unmark":
+                    tasks.unmark(Integer.parseInt(readInput[1]) - 1);
+                    System.out.println("Task unmarked!");
+                    break;
+                case "todo":
+                    tasks.addToDo(readInput[1]);
+                    System.out.println("ToDo added!");
+                    break;
+                case "deadline":
+                    tasks.addDeadline(readInput[1], readInput[2]);
+                    System.out.println("Deadline added!");
+                    break;
+                case "event":
+                    tasks.addEvent(readInput[1], readInput[2], readInput[3]);
+                    System.out.println("Event added!");
+                    break;
+                case "delete":
+                    tasks.removeTask(Integer.parseInt(readInput[1]) - 1);
+                    System.out.println("Task removed!");
+                    break;
+                case "find":
+                    System.out.println(tasks.find(readInput[1]));
+                    break;
+                default:
+                    throw new BonBonUnknownCommandException(keyword);
+            }
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
     }
 
     public void loadTasks() {
@@ -65,33 +97,37 @@ public class BonBon {
     }
 
     public static String getResponse(String input) {
-        Path filePath = Path.of("./src/main/java/data/bonbon.txt");
-        String[] readInput = Parser.readInput(input);
-        if (!readInput[0].equals("list") && !readInput[0].equals("error")) {
-            Storage.writeFile(filePath, input, tasks);
-        }
-        if (readInput[0].equals("list")) {
-            return tasks.toString();
-        } else if (readInput[0].equals("mark")) {
-            tasks.mark(Integer.parseInt(readInput[1]) - 1);
-            return "Marked task!";
-        } else if (readInput[0].equals("unmark")) {
-            tasks.unmark(Integer.parseInt(readInput[1]) - 1);
-            return "Unmark task!";
-        } else if (readInput[0].equals("todo")) {
-            tasks.addToDo(readInput[1]);
-            return "Added todo!";
-        } else if (readInput[0].equals("deadline")) {
-            tasks.addDeadline(readInput[1], readInput[2]);
-            return "Added deadline!";
-        } else if (readInput[0].equals("event")) {
-            tasks.addEvent(readInput[1], readInput[2], readInput[3]);
-            return "Added event!";
-        } else if (readInput[0].equals("delete")) {
-            tasks.removeTask(Integer.parseInt(readInput[1]) - 1);
-            return "Deleted task!";
-        } else {
-            return "Don't know what that means :(";
+        try {
+            Path filePath = Path.of("./src/main/java/data/bonbon.txt");
+            String[] readInput = Parser.readInput(input);
+            if (!readInput[0].equals("list") && !readInput[0].equals("error")) {
+                Storage.writeFile(filePath, input, tasks);
+            }
+            if (readInput[0].equals("list")) {
+                return tasks.toString();
+            } else if (readInput[0].equals("mark")) {
+                tasks.mark(Integer.parseInt(readInput[1]) - 1);
+                return "Marked task!";
+            } else if (readInput[0].equals("unmark")) {
+                tasks.unmark(Integer.parseInt(readInput[1]) - 1);
+                return "Unmark task!";
+            } else if (readInput[0].equals("todo")) {
+                tasks.addToDo(readInput[1]);
+                return "Added todo!";
+            } else if (readInput[0].equals("deadline")) {
+                tasks.addDeadline(readInput[1], readInput[2]);
+                return "Added deadline!";
+            } else if (readInput[0].equals("event")) {
+                tasks.addEvent(readInput[1], readInput[2], readInput[3]);
+                return "Added event!";
+            } else if (readInput[0].equals("delete")) {
+                tasks.removeTask(Integer.parseInt(readInput[1]) - 1);
+                return "Deleted task!";
+            } else {
+                return "Don't know what that means :(";
+            }
+        } catch (BonBonException e) {
+            return e.getMessage();
         }
     }
 }
