@@ -1,5 +1,7 @@
 package bonbon.storage;
 
+import bonbon.BonBon;
+import bonbon.exception.BonBonException;
 import bonbon.parser.Parser;
 import bonbon.tasklist.TaskList;
 
@@ -65,8 +67,8 @@ public class Storage {
                     tasks.removeTask(Integer.parseInt(readInput[1]) - 1);
                 }
             }
-        } catch (IOException e) {
-            System.out.println("Error reading file: " + e.getMessage());
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
         }
     }
 }

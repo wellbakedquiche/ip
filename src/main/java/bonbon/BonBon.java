@@ -1,9 +1,7 @@
 package bonbon;
 
-import bonbon.command.Command;
-import bonbon.exception.BonBonInvalidInput;
-import bonbon.exception.BonBonOutOfBoundsException;
-import bonbon.exception.BonBonUnknownCommand;
+import bonbon.exception.BonBonException;
+import bonbon.exception.BonBonUnknownCommandException;
 import bonbon.parser.Parser;
 import bonbon.ui.Ui;
 import bonbon.storage.Storage;
@@ -41,101 +39,104 @@ public class BonBon {
 
         while (!input.equals("bye")) {
             try {
-                String[] parsedInput = Parser.readInput(input);
+                String[] readInput = Parser.readInput(input);
+                handleInput(readInput);
 
-                assert parsedInput != null : "Parser output array should never be null";
-                assert parsedInput.length >= 1 : "Parser output should contain at least the command keyword";
-
-                String keyword = parsedInput[0];
-
-                switch (keyword) {
-                    case "list":
-                        Ui.printTaskList(tasks);
-                        break;
-                    case "mark":
-                        tasks.mark(Integer.parseInt(parsedInput[1]) - 1);
-                        System.out.println("Task has been marked!");
-                        break;
-                    case "unmark":
-                        tasks.unmark(Integer.parseInt(parsedInput[1]) - 1);
-                        System.out.println("Task has been unmarked!");
-                        break;
-                    case "todo":
-                        tasks.addToDo(parsedInput[1]);
-                        Ui.printTaskAdd(tasks.getLastTask());
-                        break;
-                    case "deadline":
-                        tasks.addDeadline(parsedInput[1], parsedInput[2]);
-                        break;
-                    case "event":
-                        tasks.addEvent(parsedInput[1], parsedInput[2], parsedInput[3]);
-                        break;
-                    case "delete":
-                        tasks.removeTask(Integer.parseInt(parsedInput[1]) - 1);
-                        break;
-                    case "find":
-                        System.out.println(tasks.find(parsedInput[1]));
-                        break;
-                }
-
-                // Save only after successful command execution
-                if (!keyword.equals("list") && !keyword.equals("find")) {
+                if (!readInput[0].equals("list") && !readInput[0].equals("error") && !readInput[0].equals("find")) {
                     Storage.writeFile(filePath, input, tasks);
                 }
-
-            } catch (BonBonUnknownCommand e) {
-                System.out.println(e.getMessage());
-                Ui.printCommands();
-            } catch (BonBonInvalidInput e) {
-                System.out.println(e.getMessage());
-
-                String keyword = input.split(" ")[0];
-                Ui.printSyntax(Command.valueOf(keyword.toUpperCase()));
-            } catch (BonBonOutOfBoundsException e) {
+            } catch (BonBonException e) {
                 System.out.println(e.getMessage());
             }
 
+            System.out.println();
             input = Ui.getInput();
         }
         Ui.exit();
+    }
+
+    public void handleInput(String[] readInput) {
+        String keyword = readInput[0];
+
+        try {
+            switch (keyword) {
+                case "list":
+                    System.out.println(tasks);
+                    break;
+                case "mark":
+                    tasks.mark(Integer.parseInt(readInput[1]) - 1);
+                    System.out.println("Task marked!");
+                    break;
+                case "unmark":
+                    tasks.unmark(Integer.parseInt(readInput[1]) - 1);
+                    System.out.println("Task unmarked!");
+                    break;
+                case "todo":
+                    tasks.addToDo(readInput[1]);
+                    System.out.println("ToDo added!");
+                    break;
+                case "deadline":
+                    tasks.addDeadline(readInput[1], readInput[2]);
+                    System.out.println("Deadline added!");
+                    break;
+                case "event":
+                    tasks.addEvent(readInput[1], readInput[2], readInput[3]);
+                    System.out.println("Event added!");
+                    break;
+                case "delete":
+                    tasks.removeTask(Integer.parseInt(readInput[1]) - 1);
+                    System.out.println("Task removed!");
+                    break;
+                case "find":
+                    System.out.println(tasks.find(readInput[1]));
+                    break;
+                default:
+                    throw new BonBonUnknownCommandException(keyword);
+            }
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
     }
 
     public void loadTasks() {
         tasks = new TaskList(100);
         Path filePath = Path.of("./src/main/java/data/bonbon.txt");
         Storage.loadFile(filePath, tasks);
+
     }
 
     public static String getResponse(String input) {
-        Path filePath = Path.of("./src/main/java/data/bonbon.txt");
-        String[] readInput = Parser.readInput(input);
-        if (!readInput[0].equals("list") && !readInput[0].equals("error")) {
-            Storage.writeFile(filePath, input, tasks);
-        }
-        if (readInput[0].equals("list")) {
-            return tasks.toString();
-        } else if (readInput[0].equals("mark")) {
-            tasks.mark(Integer.parseInt(readInput[1]) - 1);
-            return "Marked task!";
-        } else if (readInput[0].equals("unmark")) {
-            tasks.unmark(Integer.parseInt(readInput[1]) - 1);
-            return "Unmark task!";
-        } else if (readInput[0].equals("todo")) {
-            tasks.addToDo(readInput[1]);
-            return "Added todo!";
-        } else if (readInput[0].equals("deadline")) {
-            tasks.addDeadline(readInput[1], readInput[2]);
-            return "Added deadline!";
-        } else if (readInput[0].equals("event")) {
-            tasks.addEvent(readInput[1], readInput[2], readInput[3]);
-            return "Added event!";
-        } else if (readInput[0].equals("find")) {
-            return tasks.find(readInput[1]);
-        } else if (readInput[0].equals("delete")) {
-            tasks.removeTask(Integer.parseInt(readInput[1]) - 1);
-            return "Deleted task!";
-        } else {
-            return "Don't know what that means :(";
+        try {
+            Path filePath = Path.of("./src/main/java/data/bonbon.txt");
+            String[] readInput = Parser.readInput(input);
+            if (!readInput[0].equals("list") && !readInput[0].equals("error")) {
+                Storage.writeFile(filePath, input, tasks);
+            }
+            if (readInput[0].equals("list")) {
+                return tasks.toString();
+            } else if (readInput[0].equals("mark")) {
+                tasks.mark(Integer.parseInt(readInput[1]) - 1);
+                return "Marked task!";
+            } else if (readInput[0].equals("unmark")) {
+                tasks.unmark(Integer.parseInt(readInput[1]) - 1);
+                return "Unmark task!";
+            } else if (readInput[0].equals("todo")) {
+                tasks.addToDo(readInput[1]);
+                return "Added todo!";
+            } else if (readInput[0].equals("deadline")) {
+                tasks.addDeadline(readInput[1], readInput[2]);
+                return "Added deadline!";
+            } else if (readInput[0].equals("event")) {
+                tasks.addEvent(readInput[1], readInput[2], readInput[3]);
+                return "Added event!";
+            } else if (readInput[0].equals("delete")) {
+                tasks.removeTask(Integer.parseInt(readInput[1]) - 1);
+                return "Deleted task!";
+            } else {
+                return "Don't know what that means :(";
+            }
+        } catch (BonBonException e) {
+            return e.getMessage();
         }
     }
 }

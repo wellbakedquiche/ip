@@ -1,9 +1,0 @@
-todo Fight off bugbear
-event Date night /from 2006-01-01 2359 /to 2006-01-02 2359
-todo Date nigjt
-deadline event Date night /by 2006-01-01 2359
-delete 2
-delete 3
-delete 1
-delete 1
-find .
