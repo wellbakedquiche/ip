@@ -1,5 +1,8 @@
 package bonbon.tasklist;
 
+import bonbon.exception.BonBonException;
+import bonbon.exception.BonBonOutOfBoundsException;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,20 +26,30 @@ public class TaskList {
     }
 
     /**
+     * Adds
+     *
+     * @param t
+     * @return the index of the added task;
+     * @throws BonBonException when list is full.
+     */
+    public int addTask(Task t) throws BonBonException {
+        if (currSize == size) {
+            throw new BonBonException("Task list is full!");
+        }
+        tasks.add(t);
+        currSize++;
+        return currSize - 1;
+    }
+
+    /**
      * Adds a new ToDo task to the task list.
      *
      * @param s the details or name of the task to add.
      * @return the zero-based index of the newly added task, or -1 if the list is full.
      */
-    public int addToDo(String s) {
-        if (currSize == size) {
-            return -1;
-        }
+    public int addToDo(String s) throws BonBonException{
         ToDo td = new ToDo(s);
-        tasks.add(td);
-        currSize++;
-        System.out.println("Task added: " + s);
-        return currSize - 1;
+        return addTask(td);
     }
 
     /**
@@ -46,34 +59,24 @@ public class TaskList {
      * @param date the due date in format 'yyyy-MM-dd HHmm'.
      * @return the zero-based index of the newly added task, or -1 if the list is full.
      */
-    public int addDeadline(String desc, String date) {
-        if (currSize == size) {
-            return -1;
-        }
+    public int addDeadline(String desc, String date) throws BonBonException{
         Deadline deadline = new Deadline(desc, date);
-        tasks.add(deadline);
-        currSize++;
-        System.out.println("Task added: " + deadline);
-        return currSize - 1;
+        return addTask(deadline);
     }
 
-    /**
+
+     /**
      * Adds a new Event task to the task list.
      *
      * @param desc the details or name of the task to add.
      * @param start the start date in format 'yyyy-MM-dd HHmm'.
      * @param end the end date in format 'yyyy-MM-dd HHmm'
-     * @return the zero-based index of the newly added task, or -1 if the list is full.
+     * @return the zero-based index of the newly added task
+     * @throws BonBonException
      */
-    public int addEvent(String desc, String start, String end) {
-        if (currSize == size) {
-            return -1;
-        }
+    public int addEvent(String desc, String start, String end) throws BonBonException{
         Event event = new Event(desc, start, end);
-        tasks.add(event);
-        currSize++;
-        System.out.println("Task added: " + event);
-        return currSize - 1;
+        return addTask(event);
     }
 
     /**
@@ -82,12 +85,10 @@ public class TaskList {
      * @param i the zero-based index of the task to be removed.
      * @return 1 if successfully deleted, and -1 if the index is out of range.
      */
-    public int removeTask(int i) {
+    public int removeTask(int i) throws BonBonOutOfBoundsException {
         if (i >= currSize || i < 0) {
-            System.out.println("Index out of bounds");
-            return -1;
+            throw new BonBonOutOfBoundsException(currSize);
         }
-        System.out.println("Task removed: " + tasks.get(i).toString());
         tasks.remove(i);
         currSize--;
         return 1;
@@ -96,41 +97,25 @@ public class TaskList {
     /**
      * Marks task as done in the task list.
      *
-     * @param i the zero-based index of the task to be marked as done
-     * @return 1 if successfully deleted, and -1 if the index is out of range.
+     * @param i
      */
-    public int mark(int i) {
+    public void mark(int i) throws BonBonOutOfBoundsException {
         if (i >= currSize || i < 0) {
-            System.out.println("Index out of bounds.");
-            return -1;
+            throw new BonBonOutOfBoundsException(currSize);
         }
-        if (tasks.get(i).markDone()) {
-            System.out.println("Task marked as done:");
-        } else {
-            System.out.println("Task already marked as done:");
-        }
-        System.out.println(tasks.get(i).toString());
-        return 1;
+        tasks.get(i).markDone();
     }
 
     /**
      * Marks task as undone in the task list.
      *
-     * @param i the zero-based index of the task to be marked as undone
-     * @return 1 if successfully deleted, and -1 if the index is out of range.
+     * @param i
      */
-    public int unmark(int i) {
+    public void unmark(int i) throws BonBonOutOfBoundsException {
         if (i >= currSize || i < 0) {
-            System.out.println("Index out of bounds.");
-            return -1;
+            throw new BonBonOutOfBoundsException(currSize);
         }
-        if (tasks.get(i).markUndone()) {
-            System.out.println("Task marked as undone:");
-        } else {
-            System.out.println("Task already marked as undone:");
-        }
-        System.out.println(tasks.get(i).toString());
-        return 1;
+        tasks.get(i).markUndone();
     }
 
     public String find(String s) {
