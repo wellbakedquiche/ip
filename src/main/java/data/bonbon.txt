@@ -1,9 +1,9 @@
-todo Meow!
-deadline return book /by 2019-12-02 1800
+todo Fight off bugbear
+event Date night /from 2006-01-01 2359 /to 2006-01-02 2359
+todo Date nigjt
+deadline event Date night /by 2006-01-01 2359
 delete 2
-deadline Return books /by 2019-10-15 2359
+delete 3
 delete 1
-event CS2101 Tutorial 2026-09-04 1206
 delete 1
-event Lunch /from 2026-01-01 0000 /to 2026-01-01 2359
-mark 1
+find .
