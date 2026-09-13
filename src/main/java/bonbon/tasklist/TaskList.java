@@ -27,15 +27,19 @@ public class TaskList {
     }
 
     /**
-     * Adds
+     * Adds a new task
      *
-     * @param t
+     * @param
      * @return the index of the added task;
      * @throws BonBonException when list is full.
      */
-    public int addToDo(String s) throws BonBonTaskListFull {
-        ToDo td = new ToDo(s);
-        return addTask(td);
+    public int addTask(Task t) throws BonBonTaskListFull {
+        if (currSize == size) {
+            throw new BonBonTaskListFull(size);
+        }
+        tasks.add(t);
+        currSize++;
+        return currSize - 1;
     }
 
     /**
@@ -44,7 +48,7 @@ public class TaskList {
      * @param s the details or name of the task to add.
      * @return the zero-based index of the newly added task, or -1 if the list is full.
      */
-    public int addToDo(String s) throws BonBonException{
+    public int addToDo(String s) throws BonBonTaskListFull {
         ToDo td = new ToDo(s);
         return addTask(td);
     }

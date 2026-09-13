@@ -17,21 +17,17 @@ public class Parser {
      * @param input the input to be parsed.
      * @return array of arguments.
      */
-    public static String[] readInput(String input) throws BonBonInvalidParameterException, BonBonUnknownCommandException, BonBonDateTimeParseException {
+    public static String[] readInput(String input) throws BonBonInvalidParameterException,
+            BonBonUnknownCommandException, BonBonDateTimeParseException {
         if (input.equals("")) {
             throw new BonBonUnknownCommandException("");
         }
-
-        return new String[]{"event", splitDates[0], splitDates[1], splitDates[2]};
-    }
-
-    private static String[] parseFind(String input) throws BonBonInvalidInput {
         String[] splitInput = input.split(" ");
         String keyword = splitInput[0];
 
         switch (keyword) {
             case "list":
-                return new String[] {"list"};
+                return new String[]{"list"};
 
             case "mark":
                 if (splitInput.length != 2) {
@@ -49,9 +45,9 @@ public class Parser {
                 if (input.length() <= 5) {
                     throw new BonBonInvalidParameterException(keyword);
                 }
-                return new String[] {"todo", input.substring(5)};
+                return new String[]{"todo", input.substring(5)};
 
-          case "deadline" : {
+            case "deadline": {
                 if (input.length() <= 9) {
                     throw new BonBonInvalidParameterException(keyword);
                 }
@@ -60,6 +56,7 @@ public class Parser {
                 if (splitDates.length != 2) {
                     throw new BonBonDateTimeParseException();
                 }
+
                 return new String[]{"deadline", splitDates[0], splitDates[1]};
             }
 
@@ -73,7 +70,8 @@ public class Parser {
                     throw new BonBonDateTimeParseException();
                 }
                 return new String[]{"event", splitDates[0], splitDates[1], splitDates[2]};
-            }
+                }
+
 
             case "delete":
                 if (splitInput.length != 2) {
@@ -85,10 +83,11 @@ public class Parser {
                 if (input.length() <= 5) {
                     throw new BonBonInvalidParameterException(keyword);
                 }
-                return new String[] {"find", input.substring(5)};
+                return new String[]{"find", input.substring(5)};
 
             default:
                 throw new BonBonUnknownCommandException(keyword);
         }
     }
 }
+

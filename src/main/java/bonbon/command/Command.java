@@ -1,29 +1,45 @@
 package bonbon.command;
 
 public enum Command {
-    LIST("list", "Shows all tasks"),
-    MARK("mark <index>", "Marks index as done"),
-    UNMARK("unmark <index>", "Marks index as not done"),
-    TODO("todo <name>", "Creates to-do with name"),
-    DEADLINE("deadline <name> /by <due_date>", "Creates deadline with name and due date"),
-    EVENT("event <name> /from <start> /to <end>", "Creates event with name, start and end date"),
-    BYE("bye", "Exits chatbot"),
-    FIND("find <substring>", "Returns all the tasks with given description"),
-    DELETE("delete <index>", "Deletes task at given index");
+    LIST("list","list", "Shows all tasks"),
+    MARK("mark","mark <index>", "Marks index as done"),
+    UNMARK("unmark","unmark <index>", "Marks index as not done"),
+    TODO("todo","todo <name>", "Creates to-do with name"),
+    DEADLINE("deadline","deadline <name> /by <due_date>", "Creates deadline with name and due date"),
+    EVENT("event","event <name> /from <start> /to <end>", "Creates event with name, start and end date"),
+    FIND("find","find <substring>", "Returns all the tasks with given description"),
+    DELETE("delete","delete <index>", "Deletes task at given index"),
+    BYE("bye","bye", "Exits chatbot");
 
+    private final String keyword;
     private final String syntax;
     private final String description;
 
-    Command(String syntax, String description) {
+    Command(String keyword ,String syntax, String description) {
+        this.keyword = keyword;
         this.syntax = syntax;
         this.description = description;
     }
 
-    public String getSyntax() { return syntax; }
-    public String getDescription() { return description; }
+    public String getKeyword() {
+        return keyword;
+    }
+
+    public String getSyntax() {
+        return syntax;
+    }
+
+    public String getDescription() {
+        return description;
+    }
 
     @Override
     public String toString() {
         return syntax + " -> " + description;
+    }
+
+
+    public static String toStringCommands() {
+        return " ";
     }
 }
