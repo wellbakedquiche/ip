@@ -33,7 +33,6 @@ public class BonBon {
 
         Storage.loadFile(filePath, tasks);
 
-
         Ui.greet();
         String input = Ui.getInput();
 
@@ -45,7 +44,7 @@ public class BonBon {
                 if (!readInput[0].equals("list") && !readInput[0].equals("error") && !readInput[0].equals("find")) {
                     Storage.writeFile(filePath, input, tasks);
                 }
-            } catch (BonBonException e) {
+            } catch (Exception e) {
                 System.out.println(e.getMessage());
             }
 
@@ -80,7 +79,7 @@ public class BonBon {
                     System.out.println("Deadline added!");
                     break;
                 case "event":
-                    tasks.addEvent(readInput[1], readInput[2], readInput[3]);
+                    tasks.addEvent(readInput[1], readInput[2], readInput[3], readInput[4]);
                     System.out.println("Event added!");
                     break;
                 case "delete":
@@ -127,7 +126,7 @@ public class BonBon {
                 tasks.addDeadline(readInput[1], readInput[2]);
                 return "Added deadline!";
             } else if (readInput[0].equals("event")) {
-                tasks.addEvent(readInput[1], readInput[2], readInput[3]);
+                tasks.addEvent(readInput[1], readInput[2], readInput[3], readInput[4]);
                 return "Added event!";
             } else if (readInput[0].equals("delete")) {
                 tasks.removeTask(Integer.parseInt(readInput[1]) - 1);

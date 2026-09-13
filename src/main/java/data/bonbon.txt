@@ -1,4 +1,7 @@
-event Movie date /from 2025-11-29 1730 /to 2025-11-29 2200
+event Movie date /from 2025-11-29 1730 /to 2025-11-29 2200 /at Plaza Singapura
 mark 1
-deadline CS2100 Assignment /by 2026-9-14 1300
 deadline CS2100 Assignment /by 2026-09-14 1300
+unmark 1
+deadline CS2100 Assignment /by 2026-09-14 1300
+delete 3
+mark 1

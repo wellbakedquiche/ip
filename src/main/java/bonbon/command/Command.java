@@ -6,7 +6,8 @@ public enum Command {
     UNMARK("unmark","unmark <index>", "Marks index as not done"),
     TODO("todo","todo <name>", "Creates to-do with name"),
     DEADLINE("deadline","deadline <name> /by <due_date>", "Creates deadline with name and due date"),
-    EVENT("event","event <name> /from <start> /to <end>", "Creates event with name, start and end date"),
+    EVENT("event","event <name> /from <start> /to <end> /at <place>",
+            "Creates event with name, start and end date, and place"),
     FIND("find","find <substring>", "Returns all the tasks with given description"),
     DELETE("delete","delete <index>", "Deletes task at given index"),
     BYE("bye","bye", "Exits chatbot");

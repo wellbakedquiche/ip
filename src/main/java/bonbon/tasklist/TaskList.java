@@ -75,8 +75,8 @@ public class TaskList {
      * @return the zero-based index of the newly added task
      * @throws BonBonException
      */
-    public int addEvent(String desc, String start, String end) throws BonBonException{
-        Event event = new Event(desc, start, end);
+    public int addEvent(String desc, String start, String end, String place) throws BonBonException{
+        Event event = new Event(desc, start, end, place);
         return addTask(event);
     }
 

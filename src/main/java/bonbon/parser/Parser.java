@@ -56,7 +56,6 @@ public class Parser {
                 if (splitDates.length != 2) {
                     throw new BonBonDateTimeParseException();
                 }
-
                 return new String[]{"deadline", splitDates[0], splitDates[1]};
             }
 
@@ -65,13 +64,13 @@ public class Parser {
                     throw new BonBonInvalidParameterException(keyword);
                 }
                 String substrings = input.substring(6);
-                String[] splitDates = substrings.split(Pattern.quote(" /to ") + "|" + Pattern.quote(" /from "));
-                if (splitDates.length != 3) {
+                String[] splitDates = substrings.split(Pattern.quote(" /to ")
+                        + "|" + Pattern.quote(" /from ") + "|" + Pattern.quote(" /at "));
+                if (splitDates.length != 4) {
                     throw new BonBonDateTimeParseException();
                 }
-                return new String[]{"event", splitDates[0], splitDates[1], splitDates[2]};
+                return new String[]{"event", splitDates[0], splitDates[1], splitDates[2], splitDates[3]};
                 }
-
 
             case "delete":
                 if (splitInput.length != 2) {

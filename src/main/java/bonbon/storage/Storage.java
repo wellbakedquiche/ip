@@ -62,7 +62,7 @@ public class Storage {
                 } else if (readInput[0].equals("deadline")) {
                     tasks.addDeadline(readInput[1], readInput[2]);
                 } else if (readInput[0].equals("event")) {
-                    tasks.addEvent(readInput[1], readInput[2], readInput[3]);
+                    tasks.addEvent(readInput[1], readInput[2], readInput[3], readInput[4]);
                 } else if (readInput[0].equals("delete")) {
                     tasks.removeTask(Integer.parseInt(readInput[1]) - 1);
                 }

@@ -10,6 +10,7 @@ import java.time.format.DateTimeFormatter;
 public class Event extends Task {
     private LocalDateTime start;
     private LocalDateTime end;
+    private String place;
     private static final DateTimeFormatter INPUT_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HHmm");
     private static final DateTimeFormatter OUTPUT_FORMATTER = DateTimeFormatter.ofPattern("MMM dd yyyy, h:mma");
 
@@ -20,10 +21,11 @@ public class Event extends Task {
      * @param start the date and time of the start, written in format 'yyyy-MM-dd HHmm'.
      * @param end the date and time of the end, written in format 'yyyy-MM-dd HHmm'.
      */
-    public Event(String name, String start, String end) {
+    public Event(String name, String start, String end, String place) {
         super(name);
         this.start = LocalDateTime.parse(start, INPUT_FORMATTER);
         this.end = LocalDateTime.parse(end, INPUT_FORMATTER);
+        this.place = place;
     }
 
     /**
@@ -33,7 +35,7 @@ public class Event extends Task {
      */
     @Override
     public String toString() {
-        return String.format("[E]%s (from: %s to: %s)", super.toString(),
-                start.format(OUTPUT_FORMATTER), end.format(OUTPUT_FORMATTER));
+        return String.format("[E]%s (FROM: %s TO: %s AT: %s)", super.toString(),
+                start.format(OUTPUT_FORMATTER), end.format(OUTPUT_FORMATTER), place);
     }
 }
