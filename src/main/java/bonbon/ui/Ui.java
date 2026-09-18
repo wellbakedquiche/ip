@@ -10,8 +10,9 @@ import java.util.Scanner;
  * Manages user interface interactions, including reading inputs and formatting console outputs.
  */
 public class Ui {
+
     /**
-     * Displays standard message banner to users.
+     * Displays the application banner and greeting message to the console.
      */
     public static void greet() {
         String banner =
@@ -27,16 +28,16 @@ public class Ui {
     }
 
     /**
-     * Displays standard exit message to users.
+     * Displays the farewell message to the user upon exiting the application.
      */
     public static void exit() {
         System.out.println("Bye bye!!!!");
     }
 
     /**
-     * Reads the next line of text entered by the user in the console.
+     * Reads and returns the next line of input entered by the user from the console.
      *
-     * @return the input line as a string.
+     * @return The raw user input string.
      */
     public static String getInput() {
         System.out.println();
@@ -45,32 +46,29 @@ public class Ui {
         return input;
     }
 
+    /**
+     * Prints the formatted string representation of the provided task list to the console.
+     *
+     * @param t The task list to be displayed.
+     */
     public static void printTaskList(TaskList t) {
         System.out.println(t.toString());
     }
 
     /**
-     * Displays list of commands and formats to users.
+     * Displays the list of available commands and their corresponding syntax to the console.
      */
     public static void printCommands() {
         System.out.println(Command.toStringCommands());
     }
 
-    public static void printSyntax(Command cmd) {
-        String s = String.format("Correct syntax for %s is:\n%s", cmd.getKeyword(), cmd.getSyntax());
-        System.out.println(s);
-    }
-
+    /**
+     * Displays a confirmation message indicating that a task was successfully added.
+     *
+     * @param t The task that was added to the task list.
+     */
     public static void printTaskAdd(Task t) {
         String s = String.format("Task '%s' has been added!", t.toString());
         System.out.println(s);
-    }
-
-    public static String toStringCommands() {
-        StringBuilder finalStr = new StringBuilder();
-        for (Command command : Command.values()) {
-            finalStr.append(command.toString()).append("\n");
-        }
-        return finalStr.toString();
     }
 }

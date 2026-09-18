@@ -27,21 +27,24 @@ public class MainWindow extends AnchorPane {
     private BonBon bonbon;
 
     private Image userImage = new Image(this.getClass().getResourceAsStream("/images/Lyra.png"));
-    private Image dukeImage = new Image(this.getClass().getResourceAsStream("/images/BonBon.png"));
+    private Image bonBonImage = new Image(this.getClass().getResourceAsStream("/images/BonBon.png"));
 
     @FXML
     public void initialize() {
         scrollPane.vvalueProperty().bind(dialogContainer.heightProperty());
     }
 
-    /** Injects the Duke instance */
-    public void setBonbon(BonBon d) {
-        bonbon = d;
+    /**
+     * Injects the BonBon application instance into the controller.
+     *
+     * @param bon The BonBon application instance to link with the GUI.
+     */    public void setBonbon(BonBon bon) {
+        bonbon = bon;
     }
 
     /**
-     * Creates two dialog boxes, one echoing user input and the other containing Duke's reply and then appends them to
-     * the dialog container. Clears the user input after processing.
+     * Creates user and chatbot dialog boxes in response to user input, clears
+     * the input text field, and schedules application termination if "bye" is entered.
      */
     @FXML
     private void handleUserInput() {
@@ -49,7 +52,7 @@ public class MainWindow extends AnchorPane {
         String response = BonBon.getResponse(input);
         dialogContainer.getChildren().addAll(
                 DialogBox.getUserDialog(input, userImage),
-                DialogBox.getDukeDialog(response, dukeImage)
+                DialogBox.getBonDialog(response, bonBonImage)
         );
         userInput.clear();
 

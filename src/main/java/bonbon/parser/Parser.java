@@ -105,6 +105,12 @@ public class Parser {
         }
     }
 
+    /**
+     * Parses a single pipe-delimited line from the storage file into a corresponding Task object.
+     *
+     * @param line The raw line read from the task storage file.
+     * @return The constructed Task object, or null if the task type is unrecognized.
+     */
     public static Task parseTaskFromFile(String line) {
         String[] parts = line.split(" \\| ");
         String type = parts[0];
@@ -132,6 +138,12 @@ public class Parser {
         return task;
     }
 
+    /**
+     * Validates whether a given string matches the required date-time format pattern.
+     *
+     * @param s The date string to validate.
+     * @return True if the string matches the expected format, false otherwise.
+     */
     private static boolean isDateFormat(String s)  {
         try {
             LocalDateTime.parse(s, INPUT_FORMATTER);

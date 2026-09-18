@@ -39,6 +39,11 @@ public class Event extends Task {
                 start.format(OUTPUT_FORMATTER), end.format(OUTPUT_FORMATTER), place);
     }
 
+    /**
+     * Returns the string representation of the deadline task formatted for storage persistence.
+     *
+     * @return The formatted string suitable for saving to a file.
+     */
     @Override
     public String toFileFormat() {
         return String.format("E | %s | %s | %s | %s", super.toFileFormat(), start.format(Parser.INPUT_FORMATTER),

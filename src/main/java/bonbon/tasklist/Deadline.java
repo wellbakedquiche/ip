@@ -33,6 +33,11 @@ public class Deadline extends Task {
         return String.format("[D]%s (DUE BY: %s)", super.toString(), date.format(OUTPUT_FORMATTER));
     }
 
+    /**
+     * Returns the string representation of the deadline task formatted for storage persistence.
+     *
+     * @return The formatted string suitable for saving to a file.
+     */
     @Override
     public String toFileFormat() {
         return String.format("D | %s | %s", super.toFileFormat(), date.format(Parser.INPUT_FORMATTER));

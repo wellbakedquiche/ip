@@ -4,6 +4,7 @@ import bonbon.command.Command;
 import bonbon.exception.BonBonException;
 import bonbon.exception.BonBonUnknownCommandException;
 import bonbon.parser.Parser;
+import bonbon.tasklist.Task;
 import bonbon.ui.Ui;
 import bonbon.storage.Storage;
 import bonbon.tasklist.TaskList;
@@ -19,12 +20,18 @@ public class BonBon {
     static TaskList tasks;
 
     /**
-     * Runs the main application loop
+     * Serves as the main entry point to start the BonBon application.
+     *
+     * @param args Command line arguments passed during application startup.
      */
     public void main(String[] args) {
         run();
     }
 
+    /**
+     * Initializes the task list and storage, and executes the main command loop
+     * for the command-line interface until the user exits.
+     */
     private void run() {
 
         tasks = new TaskList(100);
@@ -65,6 +72,12 @@ public class BonBon {
         Ui.exit();
     }
 
+    /**
+     * Executes the corresponding task list operation or UI output based on the
+     * parsed command keyword and parameters.
+     *
+     * @param readInput The array containing the parsed command keyword and its parameters.
+     */
     public void handleInput(String[] readInput) {
         String keyword = readInput[0];
 
@@ -83,15 +96,16 @@ public class BonBon {
                     break;
                 case "todo":
                     tasks.addToDo(readInput[1]);
-                    System.out.println("ToDo added!");
+                    Ui.printTaskAdd(tasks.getLastTask());
                     break;
                 case "deadline":
                     tasks.addDeadline(readInput[1], LocalDateTime.parse(readInput[2], Parser.INPUT_FORMATTER));
-                    System.out.println("Deadline added!");
+                    Ui.printTaskAdd(tasks.getLastTask());
                     break;
                 case "event":
                     tasks.addEvent(readInput[1], LocalDateTime.parse(readInput[2], Parser.INPUT_FORMATTER),
-                            LocalDateTime.parse(readInput[3], Parser.INPUT_FORMATTER), readInput[4]);                    System.out.println("Event added!");
+                            LocalDateTime.parse(readInput[3], Parser.INPUT_FORMATTER), readInput[4]);
+                    Ui.printTaskAdd(tasks.getLastTask());
                     break;
                 case "delete":
                     tasks.removeTask(Integer.parseInt(readInput[1]) - 1);
@@ -105,19 +119,29 @@ public class BonBon {
             }
         } catch (BonBonUnknownCommandException e) {
             System.out.println(e.getMessage());
-            System.out.println(Command.toStringCommands());
+            Ui.printCommands();
         } catch (BonBonException e) {
-            System.out.println(e);
+            System.out.println(e.getMessage());
         }
     }
 
+    /**
+     * Instantiates a new task list and populates it with saved task data from
+     * the local storage file.
+     */
     public void loadTasks() {
         tasks = new TaskList(100);
         Path filePath = Path.of("./src/main/java/data/bonbon.txt");
         Storage.loadFile(filePath, tasks);
     }
 
-    // For JavaFX
+    /**
+     * Processes a raw user command from the JavaFX interface, updates storage if
+     * necessary, and returns a response string for display in the GUI.
+     *
+     * @param input The raw command string entered by the user in the GUI.
+     * @return The status message or task list representation to display to the user.
+     */
     public static String getResponse(String input) {
 
         if (input.equals("bye")) {
@@ -135,29 +159,36 @@ public class BonBon {
             if (readInput[0].equals("list")) {
                 return tasks.toString();
             } else if (readInput[0].equals("mark")) {
-                tasks.mark(Integer.parseInt(readInput[1]) - 1);
-                return "Marked task!";
+                int index = Integer.parseInt(readInput[1]) - 1;
+                tasks.mark(index);
+                return "Marked task:\n" + tasks.get(index);
             } else if (readInput[0].equals("unmark")) {
-                tasks.unmark(Integer.parseInt(readInput[1]) - 1);
-                return "Unmark task!";
+                int index = Integer.parseInt(readInput[1]) - 1;
+                tasks.unmark(index);
+                return "Unmarked task:\n" + tasks.get(index);
             } else if (readInput[0].equals("todo")) {
                 tasks.addToDo(readInput[1]);
-                return "Added todo!";
+                Task task = tasks.get(tasks.getCurrSize() - 1);
+                return "Added todo:\n" + task;
             } else if (readInput[0].equals("deadline")) {
                 tasks.addDeadline(readInput[1], LocalDateTime.parse(readInput[2], Parser.INPUT_FORMATTER));
-                return "Added deadline!";
+                Task task = tasks.get(tasks.getCurrSize() - 1);
+                return "Added deadline:\n" + task;
             } else if (readInput[0].equals("event")) {
                 tasks.addEvent(readInput[1], LocalDateTime.parse(readInput[2], Parser.INPUT_FORMATTER),
                         LocalDateTime.parse(readInput[3], Parser.INPUT_FORMATTER), readInput[4]);
-                return "Added event!";
+                Task task = tasks.get(tasks.getCurrSize() - 1);
+                return "Added event:\n" + task;
             } else if (readInput[0].equals("delete")) {
-                tasks.removeTask(Integer.parseInt(readInput[1]) - 1);
-                return "Deleted task!";
+                int index = Integer.parseInt(readInput[1]) - 1;
+                Task task = tasks.get(index);
+                tasks.removeTask(index);
+                return "Deleted task:\n" + task;
             } else {
                 return "Don't know what that means :(";
             }
         } catch (BonBonUnknownCommandException e) {
-            return e.getMessage() + "\n" + Command.toStringCommands();
+            return e.getMessage() + "\n\n" + Command.toStringCommands();
         } catch (BonBonException e) {
             return e.getMessage();
         }

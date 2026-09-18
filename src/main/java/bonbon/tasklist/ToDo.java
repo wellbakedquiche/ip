@@ -6,24 +6,29 @@ package bonbon.tasklist;
 public class ToDo extends Task {
 
     /**
-     * Creates a ToDo.
+     * Constructs a ToDo task with the specified name.
      *
-     * @param name the name of the todo.
+     * @param name The name or description of the todo task.
      */
     public ToDo(String name) {
         super(name);
     }
 
     /**
-     * Returns <code>String</code> representation of todo.
+     * Returns the string representation of the todo task, including its task type tag.
      *
-     * @return <code>String</code> representation of todo.
+     * @return The formatted string representation of the todo task.
      */
     @Override
     public String toString() {
         return "[T]" + super.toString();
     }
 
+    /**
+     * Returns the string representation of the todo task formatted for storage persistence.
+     *
+     * @return The formatted string suitable for saving to a file.
+     */
     @Override
     public String toFileFormat() {
         return String.format("T | %s", super.toFileFormat());
