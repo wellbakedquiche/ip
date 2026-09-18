@@ -151,42 +151,63 @@ public class BonBon {
         try {
             Path filePath = Path.of("./src/main/java/data/bonbon.txt");
             String[] readInput = Parser.readInput(input);
+            String command = readInput[0];
 
-            if (!readInput[0].equals("list") && !readInput[0].equals("error")) {
-                Storage.writeFile(filePath, tasks);
+            String response;
+
+            switch (command) {
+                case "list":
+                    return tasks.toString();
+
+                case "find":
+                    return tasks.find(readInput[1]);
+
+                case "mark": {
+                    int index = Integer.parseInt(readInput[1]) - 1;
+                    tasks.mark(index);
+                    response = "Marked task:\n" + tasks.getTask(index);
+                    break;
+                }
+
+                case "unmark": {
+                    int index = Integer.parseInt(readInput[1]) - 1;
+                    tasks.unmark(index);
+                    response = "Unmarked task:\n" + tasks.getTask(index);
+                    break;
+                }
+
+                case "todo":
+                    tasks.addToDo(readInput[1]);
+                    response = "Added todo:\n" + tasks.getTask(tasks.getCurrSize() - 1);
+                    break;
+
+                case "deadline":
+                    tasks.addDeadline(readInput[1], LocalDateTime.parse(readInput[2], Parser.INPUT_FORMATTER));
+                    response = "Added deadline:\n" + tasks.getTask(tasks.getCurrSize() - 1);
+                    break;
+
+                case "event":
+                    tasks.addEvent(readInput[1], LocalDateTime.parse(readInput[2], Parser.INPUT_FORMATTER),
+                            LocalDateTime.parse(readInput[3], Parser.INPUT_FORMATTER), readInput[4]);
+                    response = "Added event:\n" + tasks.getTask(tasks.getCurrSize() - 1);
+                    break;
+
+                case "delete": {
+                    int index = Integer.parseInt(readInput[1]) - 1;
+                    Task task = tasks.getTask(index);
+                    tasks.removeTask(index);
+                    response = "Deleted task:\n" + task;
+                    break;
+                }
+
+                default:
+                    return "Don't know what that means :(";
             }
 
-            if (readInput[0].equals("list")) {
-                return tasks.toString();
-            } else if (readInput[0].equals("mark")) {
-                int index = Integer.parseInt(readInput[1]) - 1;
-                tasks.mark(index);
-                return "Marked task:\n" + tasks.getTask(index);
-            } else if (readInput[0].equals("unmark")) {
-                int index = Integer.parseInt(readInput[1]) - 1;
-                tasks.unmark(index);
-                return "Unmarked task:\n" + tasks.getTask(index);
-            } else if (readInput[0].equals("todo")) {
-                tasks.addToDo(readInput[1]);
-                Task task = tasks.getTask(tasks.getCurrSize() - 1);
-                return "Added todo:\n" + task;
-            } else if (readInput[0].equals("deadline")) {
-                tasks.addDeadline(readInput[1], LocalDateTime.parse(readInput[2], Parser.INPUT_FORMATTER));
-                Task task = tasks.getTask(tasks.getCurrSize() - 1);
-                return "Added deadline:\n" + task;
-            } else if (readInput[0].equals("event")) {
-                tasks.addEvent(readInput[1], LocalDateTime.parse(readInput[2], Parser.INPUT_FORMATTER),
-                        LocalDateTime.parse(readInput[3], Parser.INPUT_FORMATTER), readInput[4]);
-                Task task = tasks.getTask(tasks.getCurrSize() - 1);
-                return "Added event:\n" + task;
-            } else if (readInput[0].equals("delete")) {
-                int index = Integer.parseInt(readInput[1]) - 1;
-                Task task = tasks.getTask(index);
-                tasks.removeTask(index);
-                return "Deleted task:\n" + task;
-            } else {
-                return "Don't know what that means :(";
-            }
+            // Save updated task list after successful task mutation
+            Storage.writeFile(filePath, tasks);
+            return response;
+
         } catch (BonBonUnknownCommandException e) {
             return e.getMessage() + "\n\n" + Command.toStringCommands();
         } catch (BonBonException e) {
