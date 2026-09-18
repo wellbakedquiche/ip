@@ -173,4 +173,8 @@ public class TaskList {
     public int size() {
         return size;
     }
+
+    public int getCurrSize() {
+        return currSize;
+    }
 }

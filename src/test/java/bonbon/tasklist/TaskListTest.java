@@ -3,9 +3,10 @@ package bonbon.tasklist;
 import bonbon.exception.BonBonException;
 import bonbon.exception.BonBonOutOfBoundsException;
 import bonbon.exception.BonBonTaskListFullException;
-import bonbon.tasklist.TaskList;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+
+import java.time.LocalDateTime;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -30,33 +31,35 @@ public class TaskListTest {
 
         assertEquals(0, index1);
         assertEquals(1, index2);
-        assertEquals(2, taskList.size());
+        assertEquals(2, taskList.getCurrSize());
     }
 
     @Test
     public void addDeadline_validInput_addsDeadlineTask() throws BonBonTaskListFullException {
-        taskList.addDeadline("submit report", "2026-09-20 2359");
+        LocalDateTime deadline = LocalDateTime.of(2026, 9, 20, 23, 59);
+        taskList.addDeadline("submit report", deadline);
 
-        assertEquals(1, taskList.size());
+        assertEquals(1, taskList.getCurrSize());
         assertEquals("submit report", taskList.get(0).getName());
     }
 
     @Test
     public void addEvent_validInput_addsEventTask() throws BonBonException {
-        taskList.addEvent("orientation", "2026-09-20 1000", "2026-09-20 1200", "location");
+        LocalDateTime start = LocalDateTime.of(2026, 9, 20, 10, 0);
+        LocalDateTime end = LocalDateTime.of(2026, 9, 20, 12, 0);
+        taskList.addEvent("orientation", start, end, "location");
 
-        assertEquals(1, taskList.size());
+        assertEquals(1, taskList.getCurrSize());
         assertEquals("orientation", taskList.get(0).getName());
     }
 
     @Test
-    public void addToDo_exceedCapacity_returnsNegativeOne() throws BonBonTaskListFullException {
+    public void addToDo_exceedCapacity_throwsTaskListFullException() throws BonBonTaskListFullException {
         TaskList smallList = new TaskList(1);
         smallList.addToDo("task 1");
 
-        int result = smallList.addToDo("task 2");
-        assertEquals(-1, result);
-        assertEquals(1, smallList.size());
+        assertThrows(BonBonTaskListFullException.class, () -> smallList.addToDo("task 2"));
+        assertEquals(1, smallList.getCurrSize());
     }
 
     // Mark & Unmark Tests
@@ -88,20 +91,17 @@ public class TaskListTest {
         int status = taskList.removeTask(0);
 
         assertEquals(1, status);
-        assertEquals(1, taskList.size());
+        assertEquals(1, taskList.getCurrSize());
         assertEquals("buy groceries", taskList.get(0).getName());
     }
 
     @Test
-    public void removeTask_outOfBoundsIndex_returnsNegativeOne() throws BonBonTaskListFullException, BonBonOutOfBoundsException {
+    public void removeTask_outOfBoundsIndex_throwsOutOfBoundsException() throws BonBonTaskListFullException {
         taskList.addToDo("read book");
 
-        int statusUpper = taskList.removeTask(5);
-        int statusNegative = taskList.removeTask(-1);
-
-        assertEquals(-1, statusUpper);
-        assertEquals(-1, statusNegative);
-        assertEquals(1, taskList.size());
+        assertThrows(BonBonOutOfBoundsException.class, () -> taskList.removeTask(5));
+        assertThrows(BonBonOutOfBoundsException.class, () -> taskList.removeTask(-1));
+        assertEquals(1, taskList.getCurrSize());
     }
 
     // Search / Find Tests

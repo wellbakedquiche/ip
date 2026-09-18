@@ -11,6 +11,7 @@ import java.io.IOException;
 import java.io.PrintStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.time.LocalDateTime;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -46,13 +47,21 @@ public class StorageTest {
     @Test
     public void writeFile_multipleTasks_overwritesWithCurrentListState() throws IOException, BonBonException {
         taskList.addToDo("buy groceries");
-        taskList.addDeadline("return book", "2026-09-01 1800");
+
+        LocalDateTime deadlineDate = LocalDateTime.of(2026, 9, 1, 18, 0);
+        taskList.addDeadline("return book", deadlineDate);
+
+        LocalDateTime eventStart = LocalDateTime.of(2026, 9, 1, 14, 0);
+        LocalDateTime eventEnd = LocalDateTime.of(2026, 9, 1, 16, 0);
+        taskList.addEvent("project meeting", eventStart, eventEnd, "Auditorium 2");
+
         Storage.writeFile(testFilePath, taskList);
 
         List<String> lines = Files.readAllLines(testFilePath);
-        assertEquals(2, lines.size());
+        assertEquals(3, lines.size());
         assertEquals("T | 0 | buy groceries", lines.get(0));
-        assertEquals("D | 0 | return book | 2026-09-01 1800", lines.get(1));
+        assertEquals("D | 0 | return book | 01/09/2026 1800", lines.get(1));
+        assertEquals("E | 0 | project meeting | 01/09/2026 1400 | 01/09/2026 1600 | Auditorium 2", lines.get(2));
     }
 
     // loadFile Tests
@@ -69,7 +78,7 @@ public class StorageTest {
             Storage.loadFile(nonExistentPath, taskList);
             String consoleOutput = outputStream.toString();
             assertTrue(consoleOutput.contains("No saved data found!"));
-            assertEquals(0, taskList.size());
+            assertEquals(0, taskList.getCurrSize());
         } finally {
             System.setOut(originalOut);
         }
@@ -77,12 +86,17 @@ public class StorageTest {
 
     @Test
     public void loadFile_validTasksInFile_populatesTaskList() throws Exception {
-        Files.writeString(testFilePath, "T | 0 | read book\nD | 0 | assignment | 2026-09-01 1800\n");
+        Files.writeString(testFilePath,
+                "T | 0 | read book\n"
+                        + "D | 0 | assignment | 01/09/2026 1800\n"
+                        + "E | 0 | team dinner | 15/10/2026 1900 | 15/10/2026 2100 | Food Court\n");
 
         Storage.loadFile(testFilePath, taskList);
 
-        assertEquals(2, taskList.size());
+        assertEquals(3, taskList.getCurrSize());
         assertEquals("read book", taskList.get(0).getName());
+        assertEquals("assignment", taskList.get(1).getName());
+        assertEquals("team dinner", taskList.get(2).getName());
     }
 
     @Test
@@ -91,7 +105,7 @@ public class StorageTest {
 
         Storage.loadFile(testFilePath, taskList);
 
-        assertEquals(1, taskList.size());
+        assertEquals(1, taskList.getCurrSize());
         assertTrue(taskList.get(0).isDone());
     }
 }

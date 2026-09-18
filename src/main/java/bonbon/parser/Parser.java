@@ -119,7 +119,8 @@ public class Parser {
                 task = new Deadline(parts[2], LocalDateTime.parse(parts[3], INPUT_FORMATTER));
                 break;
             case "E":
-                task = new Event(parts[2], LocalDateTime.parse(parts[3], INPUT_FORMATTER), LocalDateTime.parse(parts[4]), parts[5]);
+                task = new Event(parts[2], LocalDateTime.parse(parts[3], INPUT_FORMATTER),
+                        LocalDateTime.parse(parts[4], INPUT_FORMATTER), parts[5]);
                 break;
             default:
                 return null;
