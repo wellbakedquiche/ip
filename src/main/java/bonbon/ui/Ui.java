@@ -65,4 +65,12 @@ public class Ui {
         String s = String.format("Task '%s' has been added!", t.toString());
         System.out.println(s);
     }
+
+    public static String toStringCommands() {
+        StringBuilder finalStr = new StringBuilder();
+        for (Command command : Command.values()) {
+            finalStr.append(command.toString()).append("\n");
+        }
+        return finalStr.toString();
+    }
 }

@@ -1,5 +1,6 @@
 package bonbon;
 
+import bonbon.command.Command;
 import bonbon.exception.BonBonException;
 import bonbon.exception.BonBonUnknownCommandException;
 import bonbon.parser.Parser;
@@ -8,8 +9,9 @@ import bonbon.storage.Storage;
 import bonbon.tasklist.TaskList;
 
 import java.nio.file.Path;
+import java.time.LocalDateTime;
 
-/**
+/**x
  * BonBon implements a chatbot that manages user's task list.
  */
 public class BonBon {
@@ -35,6 +37,8 @@ public class BonBon {
 
         Ui.greet();
         String input = Ui.getInput();
+        boolean isSaveable = false;
+
 
         while (!input.equals("bye")) {
             try {
@@ -42,10 +46,17 @@ public class BonBon {
                 handleInput(readInput);
 
                 if (!readInput[0].equals("list") && !readInput[0].equals("error") && !readInput[0].equals("find")) {
-                    Storage.writeFile(filePath, input, tasks);
+                    isSaveable = true;
                 }
-            } catch (Exception e) {
+            } catch (BonBonUnknownCommandException e) {
                 System.out.println(e.getMessage());
+                System.out.println(Command.toStringCommands());
+            } catch (BonBonException e) {
+                System.out.println(e.getMessage());
+            }
+
+            if (isSaveable) {
+                Storage.writeFile(filePath, tasks);
             }
 
             System.out.println();
@@ -75,12 +86,12 @@ public class BonBon {
                     System.out.println("ToDo added!");
                     break;
                 case "deadline":
-                    tasks.addDeadline(readInput[1], readInput[2]);
+                    tasks.addDeadline(readInput[1], LocalDateTime.parse(readInput[2], Parser.INPUT_FORMATTER));
                     System.out.println("Deadline added!");
                     break;
                 case "event":
-                    tasks.addEvent(readInput[1], readInput[2], readInput[3], readInput[4]);
-                    System.out.println("Event added!");
+                    tasks.addEvent(readInput[1], LocalDateTime.parse(readInput[2], Parser.INPUT_FORMATTER),
+                            LocalDateTime.parse(readInput[3], Parser.INPUT_FORMATTER), readInput[4]);                    System.out.println("Event added!");
                     break;
                 case "delete":
                     tasks.removeTask(Integer.parseInt(readInput[1]) - 1);
@@ -92,8 +103,11 @@ public class BonBon {
                 default:
                     throw new BonBonUnknownCommandException(keyword);
             }
-        } catch (Exception e) {
+        } catch (BonBonUnknownCommandException e) {
             System.out.println(e.getMessage());
+            System.out.println(Command.toStringCommands());
+        } catch (BonBonException e) {
+            System.out.println(e);
         }
     }
 
@@ -101,16 +115,23 @@ public class BonBon {
         tasks = new TaskList(100);
         Path filePath = Path.of("./src/main/java/data/bonbon.txt");
         Storage.loadFile(filePath, tasks);
-
     }
 
+    // For JavaFX
     public static String getResponse(String input) {
+
+        if (input.equals("bye")) {
+            return "See ya later!";
+        }
+
         try {
             Path filePath = Path.of("./src/main/java/data/bonbon.txt");
             String[] readInput = Parser.readInput(input);
+
             if (!readInput[0].equals("list") && !readInput[0].equals("error")) {
-                Storage.writeFile(filePath, input, tasks);
+                Storage.writeFile(filePath, tasks);
             }
+
             if (readInput[0].equals("list")) {
                 return tasks.toString();
             } else if (readInput[0].equals("mark")) {
@@ -123,10 +144,11 @@ public class BonBon {
                 tasks.addToDo(readInput[1]);
                 return "Added todo!";
             } else if (readInput[0].equals("deadline")) {
-                tasks.addDeadline(readInput[1], readInput[2]);
+                tasks.addDeadline(readInput[1], LocalDateTime.parse(readInput[2], Parser.INPUT_FORMATTER));
                 return "Added deadline!";
             } else if (readInput[0].equals("event")) {
-                tasks.addEvent(readInput[1], readInput[2], readInput[3], readInput[4]);
+                tasks.addEvent(readInput[1], LocalDateTime.parse(readInput[2], Parser.INPUT_FORMATTER),
+                        LocalDateTime.parse(readInput[3], Parser.INPUT_FORMATTER), readInput[4]);
                 return "Added event!";
             } else if (readInput[0].equals("delete")) {
                 tasks.removeTask(Integer.parseInt(readInput[1]) - 1);
@@ -134,6 +156,8 @@ public class BonBon {
             } else {
                 return "Don't know what that means :(";
             }
+        } catch (BonBonUnknownCommandException e) {
+            return e.getMessage() + "\n" + Command.toStringCommands();
         } catch (BonBonException e) {
             return e.getMessage();
         }

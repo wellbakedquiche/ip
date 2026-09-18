@@ -1,12 +1,17 @@
 package bonbon.tasklist;
 
+import java.time.format.DateTimeFormatter;
+
 /**
  * Task represents a task. It represents the name of the task as a <code>String</code>,
  * and its completion status as a <code>boolean</code>.
  */
 public class Task {
+
+    protected static final DateTimeFormatter OUTPUT_FORMATTER = DateTimeFormatter.ofPattern("MMM dd yyyy, h:mma");
+
     private String name;
-    private boolean done;
+    public boolean isDone;
 
     /**
      * Creates a Task.
@@ -15,7 +20,7 @@ public class Task {
      */
     public Task(String name) {
         this.name = name;
-        this.done = false;
+        this.isDone = false;
     }
 
     /**
@@ -24,10 +29,10 @@ public class Task {
      * @return true if successfully marked as done, and false if task is already marked as done.
      */
     public boolean markDone() {
-        if (done) {
+        if (isDone) {
             return false;
         }
-        done = true;
+        isDone = true;
         return true;
     }
 
@@ -37,10 +42,10 @@ public class Task {
      * @return true if successfully marked as undone, and false if task is already marked as undone.
      */
     public boolean markUndone() {
-        if (!done) {
+        if (!isDone) {
             return false;
         }
-        done = false;
+        isDone = false;
         return true;
     }
 
@@ -48,11 +53,19 @@ public class Task {
         return name;
     }
 
+    public String toFileFormat() {
+        return (isDone ? "1" : "0") + " | " + name;
+    }
+
     @Override
     public String toString() {
-        if (done) {
+        if (isDone) {
             return "[X] " + name;
         }
         return "[ ] " + name;
+    }
+
+    public boolean isDone() {
+        return isDone;
     }
 }

@@ -2,8 +2,9 @@ package bonbon.tasklist;
 
 import bonbon.exception.BonBonException;
 import bonbon.exception.BonBonOutOfBoundsException;
-import bonbon.exception.BonBonTaskListFull;
+import bonbon.exception.BonBonTaskListFullException;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -33,9 +34,9 @@ public class TaskList {
      * @return the index of the added task;
      * @throws BonBonException when list is full.
      */
-    public int addTask(Task t) throws BonBonTaskListFull {
+    public int addTask(Task t) throws BonBonTaskListFullException {
         if (currSize == size) {
-            throw new BonBonTaskListFull(size);
+            throw new BonBonTaskListFullException(size);
         }
         tasks.add(t);
         currSize++;
@@ -48,7 +49,7 @@ public class TaskList {
      * @param s the details or name of the task to add.
      * @return the zero-based index of the newly added task, or -1 if the list is full.
      */
-    public int addToDo(String s) throws BonBonTaskListFull {
+    public int addToDo(String s) throws BonBonTaskListFullException {
         ToDo td = new ToDo(s);
         return addTask(td);
     }
@@ -60,7 +61,7 @@ public class TaskList {
      * @param date the due date in format 'yyyy-MM-dd HHmm'.
      * @return the zero-based index of the newly added task, or -1 if the list is full.
      */
-    public int addDeadline(String desc, String date) throws BonBonTaskListFull {
+    public int addDeadline(String desc, LocalDateTime date) throws BonBonTaskListFullException {
         Deadline deadline = new Deadline(desc, date);
         return addTask(deadline);
     }
@@ -75,7 +76,7 @@ public class TaskList {
      * @return the zero-based index of the newly added task
      * @throws BonBonException
      */
-    public int addEvent(String desc, String start, String end, String place) throws BonBonException{
+    public int addEvent(String desc, LocalDateTime start, LocalDateTime end, String place) throws BonBonException{
         Event event = new Event(desc, start, end, place);
         return addTask(event);
     }
@@ -163,5 +164,13 @@ public class TaskList {
             finalString += String.format("\n%d. %s", i + 1, tasks.get(i).toString());
         }
         return finalString;
+    }
+
+    public Task get(int i) {
+        return tasks.get(i);
+    }
+
+    public int size() {
+        return size;
     }
 }

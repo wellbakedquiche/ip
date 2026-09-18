@@ -1,5 +1,7 @@
 package bonbon.tasklist;
 
+import bonbon.parser.Parser;
+
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
@@ -9,8 +11,6 @@ import java.time.format.DateTimeFormatter;
  */
 public class Deadline extends Task {
     private LocalDateTime date;
-    private static final DateTimeFormatter INPUT_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HHmm");
-    private static final DateTimeFormatter OUTPUT_FORMATTER = DateTimeFormatter.ofPattern("MMM dd yyyy, h:mma");
 
     /**
      * Creates a Deadline.
@@ -18,9 +18,9 @@ public class Deadline extends Task {
      * @param name the name of the deadline.
      * @param date the date of the deadline, written in format 'yyyy-MM-dd HHmm'.
      */
-    public Deadline(String name, String date) {
+    public Deadline(String name, LocalDateTime date) {
         super(name);
-        this.date = LocalDateTime.parse(date, INPUT_FORMATTER);
+        this.date = date;
     }
 
     /**
@@ -31,5 +31,10 @@ public class Deadline extends Task {
     @Override
     public String toString() {
         return String.format("[D]%s (DUE BY: %s)", super.toString(), date.format(OUTPUT_FORMATTER));
+    }
+
+    @Override
+    public String toFileFormat() {
+        return String.format("D | %s | %s", super.toFileFormat(), date.format(Parser.INPUT_FORMATTER));
     }
 }
