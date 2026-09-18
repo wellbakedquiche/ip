@@ -29,9 +29,23 @@ public class MainWindow extends AnchorPane {
     private Image userImage = new Image(this.getClass().getResourceAsStream("/images/Lyra.png"));
     private Image bonBonImage = new Image(this.getClass().getResourceAsStream("/images/BonBon.png"));
 
+    private static final String WELCOME_MESSAGE =
+            "______                ______               \n" +
+                    "| ___ \\               | ___ \\              \n" +
+                    "| |_/ / ___  _ __     | |_/ / ___  _ __    \n" +
+                    "| ___ \\/ _ \\| '_ \\    | ___ \\/ _ \\| '_ \\   \n" +
+                    "| |_/ / (_) | | | |   | |_/ / (_) | | | |  \n" +
+                    "\\____/ \\___/|_| |_|   \\____/ \\___/|_| |_|  \n\n" +
+                    "Hello! I'm BonBon!\nWhat can I do for you today?";
+
     @FXML
     public void initialize() {
         scrollPane.vvalueProperty().bind(dialogContainer.heightProperty());
+
+        // Add greeting message on startup
+        dialogContainer.getChildren().add(
+                DialogBox.getBonDialog(WELCOME_MESSAGE, bonBonImage)
+        );
     }
 
     /**
