@@ -1,6 +1,5 @@
 package bonbon.storage;
 
-import bonbon.exception.BonBonException;
 import bonbon.parser.Parser;
 import bonbon.tasklist.Task;
 import bonbon.tasklist.TaskList;
@@ -34,7 +33,7 @@ public class Storage {
             int i = 0;
             while (true) {
                 try {
-                    Task task = tasks.get(i);
+                    Task task = tasks.getTask(i);
                     if (task == null) {
                         break;
                     }

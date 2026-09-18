@@ -40,7 +40,7 @@ public class TaskListTest {
         taskList.addDeadline("submit report", deadline);
 
         assertEquals(1, taskList.getCurrSize());
-        assertEquals("submit report", taskList.get(0).getName());
+        assertEquals("submit report", taskList.getTask(0).getName());
     }
 
     @Test
@@ -50,7 +50,7 @@ public class TaskListTest {
         taskList.addEvent("orientation", start, end, "location");
 
         assertEquals(1, taskList.getCurrSize());
-        assertEquals("orientation", taskList.get(0).getName());
+        assertEquals("orientation", taskList.getTask(0).getName());
     }
 
     @Test
@@ -69,7 +69,7 @@ public class TaskListTest {
         taskList.addToDo("read book");
         taskList.mark(0);
 
-        assertTrue(taskList.get(0).isDone());
+        assertTrue(taskList.getTask(0).isDone());
     }
 
     @Test
@@ -78,7 +78,7 @@ public class TaskListTest {
         taskList.mark(0);
         taskList.unmark(0);
 
-        assertFalse(taskList.get(0).isDone());
+        assertFalse(taskList.getTask(0).isDone());
     }
 
     // Task Removal Tests
@@ -92,7 +92,7 @@ public class TaskListTest {
 
         assertEquals(1, status);
         assertEquals(1, taskList.getCurrSize());
-        assertEquals("buy groceries", taskList.get(0).getName());
+        assertEquals("buy groceries", taskList.getTask(0).getName());
     }
 
     @Test

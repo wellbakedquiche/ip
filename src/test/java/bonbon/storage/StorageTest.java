@@ -94,9 +94,9 @@ public class StorageTest {
         Storage.loadFile(testFilePath, taskList);
 
         assertEquals(3, taskList.getCurrSize());
-        assertEquals("read book", taskList.get(0).getName());
-        assertEquals("assignment", taskList.get(1).getName());
-        assertEquals("team dinner", taskList.get(2).getName());
+        assertEquals("read book", taskList.getTask(0).getName());
+        assertEquals("assignment", taskList.getTask(1).getName());
+        assertEquals("team dinner", taskList.getTask(2).getName());
     }
 
     @Test
@@ -106,6 +106,6 @@ public class StorageTest {
         Storage.loadFile(testFilePath, taskList);
 
         assertEquals(1, taskList.getCurrSize());
-        assertTrue(taskList.get(0).isDone());
+        assertTrue(taskList.getTask(0).isDone());
     }
 }

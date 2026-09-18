@@ -47,15 +47,6 @@ public class Ui {
     }
 
     /**
-     * Prints the formatted string representation of the provided task list to the console.
-     *
-     * @param t The task list to be displayed.
-     */
-    public static void printTaskList(TaskList t) {
-        System.out.println(t.toString());
-    }
-
-    /**
      * Displays the list of available commands and their corresponding syntax to the console.
      */
     public static void printCommands() {

@@ -161,27 +161,27 @@ public class BonBon {
             } else if (readInput[0].equals("mark")) {
                 int index = Integer.parseInt(readInput[1]) - 1;
                 tasks.mark(index);
-                return "Marked task:\n" + tasks.get(index);
+                return "Marked task:\n" + tasks.getTask(index);
             } else if (readInput[0].equals("unmark")) {
                 int index = Integer.parseInt(readInput[1]) - 1;
                 tasks.unmark(index);
-                return "Unmarked task:\n" + tasks.get(index);
+                return "Unmarked task:\n" + tasks.getTask(index);
             } else if (readInput[0].equals("todo")) {
                 tasks.addToDo(readInput[1]);
-                Task task = tasks.get(tasks.getCurrSize() - 1);
+                Task task = tasks.getTask(tasks.getCurrSize() - 1);
                 return "Added todo:\n" + task;
             } else if (readInput[0].equals("deadline")) {
                 tasks.addDeadline(readInput[1], LocalDateTime.parse(readInput[2], Parser.INPUT_FORMATTER));
-                Task task = tasks.get(tasks.getCurrSize() - 1);
+                Task task = tasks.getTask(tasks.getCurrSize() - 1);
                 return "Added deadline:\n" + task;
             } else if (readInput[0].equals("event")) {
                 tasks.addEvent(readInput[1], LocalDateTime.parse(readInput[2], Parser.INPUT_FORMATTER),
                         LocalDateTime.parse(readInput[3], Parser.INPUT_FORMATTER), readInput[4]);
-                Task task = tasks.get(tasks.getCurrSize() - 1);
+                Task task = tasks.getTask(tasks.getCurrSize() - 1);
                 return "Added event:\n" + task;
             } else if (readInput[0].equals("delete")) {
                 int index = Integer.parseInt(readInput[1]) - 1;
-                Task task = tasks.get(index);
+                Task task = tasks.getTask(index);
                 tasks.removeTask(index);
                 return "Deleted task:\n" + task;
             } else {

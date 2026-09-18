@@ -166,12 +166,8 @@ public class TaskList {
         return finalString;
     }
 
-    public Task get(int i) {
+    public Task getTask(int i) {
         return tasks.get(i);
-    }
-
-    public int size() {
-        return size;
     }
 
     public int getCurrSize() {
